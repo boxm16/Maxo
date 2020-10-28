@@ -29,17 +29,18 @@ and open the template in the editor.
             <div class="row">
 
                 <div class="col-sm"> 
-                    <a href="index.php">ძველ ვერსიაზე დაბრუნება</a>
-
+                    <a href="index.php">პირველ ვერსიაზე დაბრუნება</a>
+                    <br>
+                    <a href="try.php">მე-2 ვერსიის სანახავად დააჭირე აქ</a>
                     <table style="width:370px" >
                         <thead>
                             <tr>
                                 <th>  <label>+/-</label><input id="plusMinusInput" type="number" min="0" value="2" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"> </th>
                                 <th colspan="4"> 
-                                    <div>
+                                    <div class="text-center align-middle">
                                         <button class="btn btn-success" type="button" id="backButton"  disabled="true" onclick="goBack()"><<<<<<</button>
                                         &nbsp;&nbsp;
-                                        <button class="btn btn-success" type="button" id="forwardButton"  disabled="true" onclick="goForward()">>>>>>></button>
+                                        <button  class="btn btn-success" type="button" id="forwardButton"  disabled="true" onclick="goForward()">>>>>>></button>
                                         <br>
 
                                     </div>

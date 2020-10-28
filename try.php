@@ -23,7 +23,9 @@ and open the template in the editor.
         </style>
     </head>
     <body>
-        <a href="index.php">ძველ ვერსიაზე დაბრუნება</a>
+        <a href="index.php">პირველ ძველ ვერსიაზე დაბრუნება</a>
+        <br>
+         <a href="lab.php">მე-3 ვერსიის სანახავად დააჭირე აქ</a>
         <div>
             <table >
                 <thead>
