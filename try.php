@@ -7,12 +7,10 @@ and open the template in the editor.
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title></title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <style>
             input[type="number"] {
-                width:50px;
+                width:34px;
             }
             table {
                 border-collapse: collapse;
@@ -25,112 +23,88 @@ and open the template in the editor.
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
+        <a href="index.php">ძველ ვერსიაზე დაბრუნება</a>
+        <div>
+            <table >
+                <thead>
+                    <tr>
+                        <th>  <label>+/-</label><input id="plusMinusInput" type="number" min="0" value="2" oninput="checkAndCalculate(event)"> </th>
+                        <th colspan="4"> 
+                            <div>
+                                <input type="button" id="backButton" value="<<<<<< " disabled="true" onclick="goBack()">
+                                &nbsp;&nbsp;
+                                <input type="button" id="forwardButton" value=">>>>>>" disabled="true" onclick="goForward()">
+                                <br>
 
-                <div class="col-sm"> 
-                    <a href="index.php">ძველ ვერსიაზე დაბრუნება</a>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
 
-                    <table style="width:370px" >
-                        <thead>
-                            <tr>
-                                <th>  <label>+/-</label><input id="plusMinusInput" type="number" min="0" value="2" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"> </th>
-                                <th colspan="4"> 
-                                    <div>
-                                        <button class="btn btn-success" type="button" id="backButton"  disabled="true" onclick="goBack()"><<<<<<</button>
-                                        &nbsp;&nbsp;
-                                        <button class="btn btn-success" type="button" id="forwardButton"  disabled="true" onclick="goForward()">>>>>>></button>
-                                        <br>
+                    <tr id="roundTr">
+                        <td><input id="roundCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
+                        <td >ბრუნის დრო</td><td>საათი<br><input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="checkAndCalculate(event)"></td><td>წუთი<br><input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="checkAndCalculate(event)"></td><td>წამი<br><input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="checkAndCalculate(event)"></td>
 
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    </tr>
+                    <tr id="busTr">
+                        <td><input id="busCheckBox" type="checkbox" onclick="checkCheckBoxes(event)" ></td>
+                        <td>ავტობუსების<br> რაოდენობა</td><td colspan="3"><input id="busInput" class="input" type="number" disabled="true" style="width:125px;" max="200" min="1" value="1" oninput="checkAndCalculate(event)"></td>
+                    </tr>
+                    <tr id="intervalTr">
+                        <td><input id="intervalCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
+                        <td>ინტერვალი</td><td>საათი<br><input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="checkAndCalculate(event)"></td><td>წუთი<br><input id="intervalInputMinute" class="input" type="number" disabled="true" value="10" oninput="checkAndCalculate(event)"></td><td>წამი<br><input id="intervalInputSecond" class="input" type="number" disabled="true"  value="00" oninput="checkAndCalculate(event)"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <label>შენიშვნები: </label> <label id="redNotes" style="color:red" ></label>
+        </div>
+        <hr>
+        <div>
+            <label>პირდაპირი შედეგი: </label><label id="notes"></label>
+        </div>
+        <hr>
+        <div>
 
-                            <tr id="roundTr">
-                                <td><input id="roundCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
-                                <td >ბრუნის დრო</td><td>საათი<br><input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
-
-                            </tr>
-                            <tr id="busTr">
-                                <td><input id="busCheckBox" type="checkbox" onclick="checkCheckBoxes(event)" ></td>
-                                <td>ავტობუსების<br> რაოდენობა</td><td colspan="3"><input id="busInput" class="input" type="number" disabled="true" style="width:125px;" max="200" min="1" value="1" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
-                            </tr>
-                            <tr id="intervalTr">
-                                <td><input id="intervalCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
-                                <td>ინტერვალი</td><td>საათი<br><input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="intervalInputMinute" class="input" type="number" disabled="true" value="10" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="intervalInputSecond" class="input" type="number" disabled="true"  value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
-                            </tr>
-                            <tr><td colspan="5"></td></tr>
-                            <tr><td colspan="5"><button type="button" class="btn  btn-primary" style="width:100%;" onclick="checkAndCalculate()"><b>გამოთვლა</b></button></td></tr>
-                            <tr><td colspan="5"> 
-                                    <label id="notes"></label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <hr>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-sm">
-
-                    <div>
-                        <table>
-                            <tr>
-                                <th>#</th><th>ბრუნის დრო</th><th><h6><b>ავტობუსების<br>რაოდენობა</b></h6><th>ინტერვალი</th>
-                            </tr>
-                            <tbody id="zeroTableBody">
-                            </tbody>
-                        </table>
-                        <hr>
-                        <div>
-                            <label>ყველა შედეგები</label>
-                            <table>
-                                <tr>
-                                    <th>#</th><th>ბრუნის დრო</th><th><h6><b>ავტობუსების<br>რაოდენობა</b></h6></th><th>ინტერვალი</th>
-                                </tr>
-                                <tbody id="allTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <table>
+                <tr>
+                    <th>შედეგის<br>ნომერი</th><th>ბრუნის დრო</th><th>ავტობუსების<br>რაოდენობა</th><th>ინტერვალი</th>
+                </tr>
+                <tbody id="zeroTableBody">
+                </tbody>
+            </table>
+            <hr>
+            <div>
+                <label>ყველა შედეგები</label>
+                <table>
+                    <tr>
+                        <th>შედეგის<br>ნომერი</th><th>ბრუნის დრო</th><th>ავტობუსების<br>რაოდენობა</th><th>ინტერვალი</th>
+                    </tr>
+                    <tbody id="allTableBody">
+                    </tbody>
+                </table>
             </div>
         </div>
+
         <script>
             var h = [];
             var hNumber = 0;
-
-            function incoming(event) {
-                zeroTableBody.innerHTML = "";
-                allTableBody.innerHTML = "";
-                if (event.keyCode === 13) {
-                    checkAndCalculate();
-                }
-            }
-
             function checkCheckBoxes(event) {
                 var target = event.target;
-
+                redNotes.innerHTML = "";
                 zeroTableBody.innerHTML = "";
                 allTableBody.innerHTML = "";
                 var trElements = event.target.parentElement.parentElement;
                 var trInputs = trElements.querySelectorAll(".input");
                 if (selectedParametres() == 3) {
-                    console.log("kkkk");
                     target.checked = false;
-                    notes.style.color = "red";
-                    notes.innerHTML = "სამივე პარამეტრის არჩევა დაუშვებელია";
-
-                    //  redNotes.innerHTML = "სამივე პარამეტრის არჩევა დაუშვებელია";
+                    redNotes.innerHTML = "სამივე პარამეტრის არჩევა დაუშვებელია";
                     for (i = 0; i < trInputs.length; i++) {
                         trInputs[i].disabled = true;
                     }
                 } else {
-                    notes.innerHTML = "";
                     if (target.checked == false) {
                         for (i = 0; i < trInputs.length; i++) {
                             trInputs[i].disabled = true;
@@ -143,7 +117,7 @@ and open the template in the editor.
                 }
 
 
-
+                notes.innerHTML = "";
             }
 
             function selectedParametres() {
@@ -152,10 +126,17 @@ and open the template in the editor.
 
 
 
-            function checkAndCalculate() {
-
+            function checkAndCalculate(event) {
+                redNotes.innerHTML = "";
                 zeroTableBody.innerHTML = "";
                 allTableBody.innerHTML = "";
+
+                var targetTR = event.target.parentNode.parentNode.id;
+
+                //first adjast time inputs
+                if (targetTR == "roundTr" || targetTR == "intervalTr") {
+                    adjastTimeInputs(targetTR);
+                }
 
 
                 if (inputsValid()) {
@@ -229,28 +210,29 @@ and open the template in the editor.
                 roundInputHour.value = splittedResult[0];
                 roundInputMinute.value = splittedResult[1];
                 roundInputSecond.value = splittedResult[2];
-                notes.style.color = "green";
-                notes.innerHTML = "პირდაპირი შედეგი ჯერადია.";
+                notes.innerHTML = "შედეგი ჯერადია. (ნაშთის გარეშეა, ანუ ნაშთი=0)";
             }
 
             function calculateBus(seconds) {
                 var intervalSeconds = (intervalInputHour.value * 60 * 60) + (intervalInputMinute.value * 60) + parseInt(intervalInputSecond.value);
 
-                var result = seconds / intervalSeconds;
-                var nashti = result % 1;
-                busInput.value = parseInt(result);
-                if (nashti == 0) {
-                    notes.style.color = "green";
-                    notes.innerHTML = "პირდაპირი შედეგი ჯერადია.";
+                if (intervalSeconds > seconds) {
+                    redNotes.innerHTML = "ინტერვალის დრო აღემათება ბრუნის დროს, რაც დაუშვებელია";
                 } else {
+                    var result = seconds / intervalSeconds;
+                    var nashti = result % 1;
+                    busInput.value = parseInt(result);
+                    if (nashti == 0) {
+                        notes.innerHTML = "შედეგი ჯერადია. (ნაშთის გარეშეა, ანუ ნაშთი=0)";
+                    } else {
 
-                    notes.innerHTML = "<label style='color:red;'>ყურადღება,პირდაპირი შედეგი არ არის ჯერადი </label>";
-                    // + "<br><label>ნაშთი= " + nashti + "</label><br>"
-                    //+ "<label>ჯერადი შედეგის მისაღებად ან დააკელი ბრუნის დრო ან გაზარდე ინტერვალის დრო</label>";
+                        notes.innerHTML = "<label style='color:red;'>ყურადღება,პირდაპირი შედეგი არ არის ჯერადი </label>";
+                        // + "<br><label>ნაშთი= " + nashti + "</label><br>"
+                        //+ "<label>ჯერადი შედეგის მისაღებად ან დააკელი ბრუნის დრო ან გაზარდე ინტერვალის დრო</label>";
 
+                    }
                 }
             }
-
             function calculateInterval(seconds) {
                 var result = seconds / busInput.value;
                 var date = new Date(0);
@@ -262,8 +244,7 @@ and open the template in the editor.
                 intervalInputSecond.value = splittedResult[2];
                 var nashti = result % 3600 % 60 % 1;
                 if (nashti == 0) {
-                    notes.style.color = "green";
-                    notes.innerHTML = "პირდაპირი შედეგი ჯერადია.";
+                    notes.innerHTML = "შედეგი ჯერადია. (ნაშთის გარეშეა, ანუ ნაშთი=0)";
                 } else {
                     var recalculatedSeconds = (splittedResult[0] * 3600) + (splittedResult[1] * 60) + parseInt(splittedResult[2]);
                     var recalculatedTime = recalculatedSeconds * busInput.value;
@@ -321,44 +302,22 @@ and open the template in the editor.
             }
 
             function inputsValid() {
-                if (roundCheckBox.checked & intervalCheckBox.checked) {
-                    var seconds = (roundInputHour.value * 60 * 60) + (roundInputMinute.value * 60) + parseInt(roundInputSecond.value);
-                    var intervalSeconds = (intervalInputHour.value * 60 * 60) + (intervalInputMinute.value * 60) + parseInt(intervalInputSecond.value);
-
-                    if (intervalSeconds > seconds) {
-                        notes.style.color = "red";
-                        notes.innerHTML = "ინტერვალის დრო აღემათება ბრუნის დროს, რაც დაუშვებელია";
-                        return false;
-                        //    redNotes.innerHTML = "ინტერვალის დრო აღემათება ბრუნის დროს, რაც დაუშვებელია";
-                    }
-                }
-
-                if (selectedParametres() < 2) {
-                    notes.style.color = "red";
-                    notes.innerHTML = "არჩეულია არასაკარისი პარამეტრები. საჭიროა 2 პარამეტრის არჩევა";
-                    // redNotes.innerHTML = "არჩეულია არასაკარისი პარამეტრები. საჭიროა 2 პარამეტრის არჩევა";
+                if (selectedParametres() == 1) {
+                    redNotes.innerHTML = "არჩეულია არასაკარისი პარამეტრები. საჭიროა 2 პარამეტრის არჩევა";
                     return false;
                 }
-                if (intervalCheckBox.checked & intervalInputHour.value == 0 & intervalInputMinute.value == 0 & intervalInputSecond.value == 0) {
-                    notes.style.color = "red";
-                    notes.innerHTML = "მითითებული ინტერვალი დაუშვებელია (0). ინტერვალი უნდა იყოს არანაკლებ 1 წამი";
-                    //  redNotes.innerHTML = "მითითებული ინტერვალი დაუშვებელია (0). ინტერვალი უნდა იყოს არანაკლებ 1 წამი";
+                if (intervalInputHour.value == 0 & intervalInputMinute.value == 0 & intervalInputSecond.value == 0) {
+                    redNotes.innerHTML = "მითითებული ინტერვალი დაუშვებელია (0). ინტერვალი უნდა იყოს არანაკლებ 1 წამი";
                     return false;
                 }
-                if (busCheckBox.checked & busInput.value == 0) {
-                    notes.style.color = "red";
-                    notes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
-                    // redNotes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
+                if (busInput.value == 0) {
+                    redNotes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
                     return false;
                 }
                 return true;
             }
 
-            function adjastTimeInputs(event) {
-                notes.innerHTML = "";
-                zeroTableBody.innerHTML = "";
-                allTableBody.innerHTML = "";
-                var targetTR = event.target.parentNode.parentNode.id;
+            function adjastTimeInputs(targetTR) {
                 var targetInputs;
                 if (targetTR == "roundTr") {
                     targetInputs = "round"
@@ -394,9 +353,7 @@ and open the template in the editor.
 
                 if (hour.value == -1) {
                     hour.value = 0;
-                    notes.style.color = "red";
-                    notes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
-                    //  redNotes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
+                    redNotes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
 
                 }
 
@@ -421,9 +378,7 @@ and open the template in the editor.
                     x = 0;
                     hour.value = 0;
                     minute.value = 0;
-                    notes.style.color = "red";
-                    notes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
-                    //  redNotes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
+                    redNotes.innerHTML = "საათების 0 ზე ქვემოთ ჩამოსვლა დაუშვებელია";
                 }
                 if (x < 10) {
                     hour.value = "0" + x;
@@ -504,10 +459,6 @@ and open the template in the editor.
                 }
             }
         </script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
     </body>
 
 </html>

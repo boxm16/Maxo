@@ -23,6 +23,8 @@ and open the template in the editor.
         </style>
     </head>
     <body>
+        <a href="try.php">ახალი ვერსიის სანახავად დააჭირე აქ</a>
+        <br>
         <table >
             <thead>
                 <tr>
@@ -48,10 +50,21 @@ and open the template in the editor.
         </table>
         <label id="notes"></label>
         <hr>
+        <label>ბრუნის დროის +/-</label><input id="plusMinusInput" type="number" min="0" value="2" onchange="calculateTable()"><label> წუთით შეცვლის შემთხვევაში ჯერადი შედეგების ცხრილი</label>
+        <br><br>
+        <label>00 წამზე დამჯდარი შედეგები</label>
+        <br>
+
+        <div id="cxriliZero"></div>
+        (თუ ცხრილი ცარიელია ესეიგი არ არსებოს 00 წამზე დამჯდარი არცერთი შედეგი)
+        <hr>
+
+        <label>ყველა შედეგები</label>
+        <div id="cxrili"></div>
 
         <script>
 
-
+            calculateTable();
             var notes = document.getElementById("notes");
             notes.innerHTML = "";
 
@@ -150,6 +163,7 @@ and open the template in the editor.
                         calculateBus(seconds);
 
                     }
+                    calculateTable();
                 }
             }
             function calculateByBus() {
@@ -164,6 +178,7 @@ and open the template in the editor.
                     } else {
                         calculateTime();
                     }
+                    calculateTable();
                 }
 
             }
@@ -202,6 +217,7 @@ and open the template in the editor.
                         calculateTime();
 
                     }
+                    calculateTable();
                 }
 
             }
@@ -319,6 +335,57 @@ and open the template in the editor.
                 } else {
                     intervalInputHour.value = x;
                 }
+            }
+
+
+            function calculateTable() {
+                var timeSeconds = (timeInputHour.value * 60 * 60) + (timeInputMinute.value * 60) + parseInt(timeInputSecond.value);
+                var plusMinus = plusMinusInput.value * 60;
+                var startingTime = timeSeconds + plusMinus;
+                var endingTime = timeSeconds - plusMinus;
+
+                var tableZero = "<table><tr><th>შედეგის<br>ნომერი</th><th>ბრუნის დრო</th><th>ავტობუსების<br>რაოდენობა</th><th>ინტერვალი</th></tr>"
+
+                var table = "<table><tr><th>შედეგის<br>ნომერი</th><th>ბრუნის დრო</th><th>ავტობუსების<br>რაოდენობა</th><th>ინტერვალი</th></tr>"
+
+                var a = 0;
+                for (x = startingTime; x > endingTime - 1; x--) {
+                    if (x == 0) {
+                        break;
+                    }
+                    var result = x / busInput.value;
+                    var roundTime = new Date(0);
+                    roundTime.setSeconds(x);
+                    var roundTimeResultString = roundTime.toISOString().substr(11, 8);
+
+                    var intervalTime = new Date(0);
+                    intervalTime.setSeconds(result);
+                    var intervalTimeResultString = intervalTime.toISOString().substr(11, 8);
+
+                    var roundTimeSplittedResult = roundTimeResultString.split(":");
+                    var roundTimeSeconds = roundTimeSplittedResult[2];
+                    var interalSplittedResult = intervalTimeResultString.split(":");
+                    var intervalSeconds = interalSplittedResult[2];
+
+
+                    var nashti = result % 3600 % 60 % 1;
+                    if (nashti == 0) {
+                        table = table + "<tr><td>" + a + "</td><td>" + roundTimeResultString + "</td><td>" + busInput.value + "</td><td>" + intervalTimeResultString + "</td></tr>";
+                        if (roundTimeSeconds == 0 && intervalSeconds == 00) {
+                            tableZero = tableZero + "<tr><td>" + a + "</td><td>" + roundTimeResultString + "</td><td>" + busInput.value + "</td><td>" + intervalTimeResultString + "</td></tr>";
+
+                        }
+
+
+
+                        a++;
+                    }
+
+                }
+                tableZero = tableZero + "</table>";
+                table = table + "</table>";
+                cxriliZero.innerHTML = tableZero;
+                cxrili.innerHTML = table;
             }
 
             //-----------------------------------------
