@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Bootstrap Example</title>
+        <title>მახო</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -21,12 +21,12 @@
     <body>
 
         <div class="container">
-            <a href="index.php">ძველი ვერსია</a>     &nbsp;&nbsp; <a href="boot.php">ვერსია 2</a>
+            <a href="index.php">ძველი ვერსია</a>     &nbsp;&nbsp; <a href="boot.php">ვერსია 2</a>     &nbsp;&nbsp; <a href="boot.php">ვერსია 3</a>
             <div class="row">
 
                 <div class="col-sm-5">
 
-                    <table class="table"  >
+                    <table id="calculationTable" class="table"  >
 
                         <tbody>
                             <tr>
@@ -81,7 +81,7 @@
 
                             </tr>
 
-                            <tr>
+                            <tr >
                                 <td>
                                     <input id="intervalCheckBox" type="checkbox" onclick="checkCheckBoxes(event)">
                                 </td>
@@ -153,7 +153,7 @@
 
 
 
-                <div class="col-sm-7" style="height: 400px; overflow:auto"> 
+                <div id="resultTables" class="col-sm-7" style="height: 400px; overflow:auto"> 
                     <div >
 
                         <table style="width:100%">
@@ -181,6 +181,8 @@
         <script>
             var h = [];
             var hNumber = 0;
+
+
 
             function incoming(event) {
                 zeroTableBody.innerHTML = "";
@@ -356,6 +358,15 @@
             }
 
             function calculateTable() {
+
+                if (window.innerWidth < 550) {
+
+                    console.log("cal. heigh" + calculationTable.offsetHeight);
+                    resultTables.style.height = (window.innerHeight - calculationTable.offsetHeight-50 ) + "px";
+                } else {
+                    resultTables.style.height = (window.innerHeight - 50) + "px";
+                }
+
                 var roundSeconds = (roundInputHour.value * 60 * 60) + (roundInputMinute.value * 60) + parseInt(roundInputSecond.value);
                 var plusMinus = plusMinusInput.value * 60;
                 var startingTime = roundSeconds + plusMinus;
@@ -376,6 +387,7 @@
 
                 } else {
                     busCounts.push(busCount);
+
                 }
 
 
@@ -469,7 +481,7 @@
 
                     adjastTimeInputs_2();
                 }
-                if (targetTR == "interval") {
+                if (targetTR == "intervalTr") {
                     targetInputs = "interval";
                     adjastTimeInputs_1(targetInputs);
                 }
@@ -479,6 +491,7 @@
 
             }
             function adjastTimeInputs_1(targetInputs) {
+
                 var second = document.getElementById(targetInputs + "InputSecond");
                 var minute = document.getElementById(targetInputs + "InputMinute");
                 var hour = document.getElementById(targetInputs + "InputHour");
