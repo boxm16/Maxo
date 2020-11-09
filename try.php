@@ -21,7 +21,7 @@
     <body>
 
         <div class="container">
-            <a href="index.php">ძველი ვერსია</a>     &nbsp;&nbsp; <a href="boot.php">ვერსია 2</a>     &nbsp;&nbsp; <a href="boot.php">ვერსია 3</a>
+            <a href="index.php">ძველი ვერსია</a> 
             <div class="row">
 
                 <div class="col-sm-5">
@@ -361,8 +361,7 @@
 
                 if (window.innerWidth < 550) {
 
-                    console.log("cal. heigh" + calculationTable.offsetHeight);
-                    resultTables.style.height = (window.innerHeight - calculationTable.offsetHeight-50 ) + "px";
+                    resultTables.style.height = (window.innerHeight - calculationTable.offsetHeight - 50) + "px";
                 } else {
                     resultTables.style.height = (window.innerHeight - 50) + "px";
                 }
@@ -376,7 +375,7 @@
                 var allTableRows = "";
                 var a = 0;
                 var busCounts = new Array();
-                var busCount = busInput.value
+                var busCount = busInput.value;
                 if (!busCheckBox.checked && busCount > 1) {
                     busCount--;
                     busCounts.push(busCount);
@@ -385,9 +384,13 @@
                     busCount++;
                     busCounts.push(busCount);
 
-                } else {
+                } else if (!busCheckBox.checked && busCount == 1)
+                {
                     busCounts.push(busCount);
-
+                    busCount++;
+                    busCounts.push(busCount);
+                }else {
+                   busCounts.push(busCount); 
                 }
 
 

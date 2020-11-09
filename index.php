@@ -26,7 +26,7 @@ and open the template in the editor.
     </head>
     <body>
         <div class="container">
-                <a href="boot.php">ვერსია 2</a> &nbsp;&nbsp;<a href="lab.php">ვერსია 3</a>
+                <a href="try.php">ახალი ვერსია</a>
             <div class="row">
 
                 <div class="col-sm"> 
