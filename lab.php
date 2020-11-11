@@ -25,7 +25,7 @@
             <div class="row">
 
                 <div class="col-sm-5" style="background-color:lavender;">
-
+                    <input type="time">
                     <table  >
 
                         <tbody>
