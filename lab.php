@@ -1,3 +1,9 @@
+
+<?php
+require_once 'Controller/DayTrips.php';
+$DayTrips = new DayTrips();
+$dayTrips = $DayTrips->getDayTrips();
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,219 +13,59 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style>
-            input[type="number"] {
-                width:45px;
-            }
 
-            table, tr, td, th {
-                border:1px solid black;
-            }
-        </style>
 
     </head>
     <body>
 
-        <div class="container">
-            <a href="index.php">ძველი ვერსია</a>
-            <div class="row">
+        <hr>
+        <?php $height = 300; ?>
+        <svg width="1500" height="610">
+        <rect x="5" width="1530" height="20" style="fill:rgb(0,0,0);" />
+        <rect x="5" width="20" height="<?php echo $height ?>" style="fill:rgb(0,0,0);" />
+        <?php
+        $x = 30;
+        $y = 30;
+        $lap = 1200 / 20;
+        $time = "05";
+        for ($a = 0; $a < 21; $a++) {
+            echo " <line x1='$x' y1='20' x2='$x' y2='$height' style='stroke:rgb(0,0,0);stroke-width:1' />";
+            $tp = $x - 17;
 
-                <div class="col-sm-5" style="background-color:lavender;">
-                    <input type="time">
-                    <table  >
-
-                        <tbody>
-                            <tr>
-                                <td colspan="4">
-                                    <div >
-                                        <button class="btn btn-success" type="button" id="backButton"  disabled="true" onclick="goBack()"><<<<</button>
-                                        &nbsp;&nbsp;
-                                        <button  class="btn btn-success" type="button" id="forwardButton"  disabled="true" onclick="goForward()">>>>></button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <input id="roundCheckBox" type="checkbox" onclick="checkCheckBoxes(event)">
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                ბრუნის<br> დრო
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                            ფარგლები<br>
-                                                <label>+/-</label>
-                                                <input id="plusMinusInput" type="number" min="0" value="2" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-
-                                        </tr>
-                                    </table>
-
-                                </td>
+            $timeF = $time . ":00";
+            echo "<text x='$tp' y='15' fill='white'>$timeF</text>";
+            $time++;
+            if ($time < 10) {
+                $time = "0" . $time;
+            }
+            if ($time == 25) {
+                $time = "01";
+            }
+            $x += $lap;
+        }
 
 
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td >
-                                                საათი
-                                                <br>
-                                                <input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                            <td >
-                                                წუთი
-                                                <br>
-                                                <input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                            <td>
-                                                წამი
-                                                <br>
-                                                <input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                წუთები
-                                                <br>
-                                                <input type="number" style="width:90px" >
-                                            </td>
-                                            <td>
-                                                წამები
-                                                <br> 
-                                                <input type="number">
-                                            </td> 
-                                        </tr>
-                                    </table>
-                                </td>
+//--------------------------------------------------------//
+        $yI = 30;
+        foreach ($dayTrips as $busDayTrips) {
 
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input id="busCheckBox" type="checkbox" onclick="checkCheckBoxes(event)" >
-                                </td>
-                                <td>
-                                    ავტობუსების<br> რაოდენობა
-                                </td>
-                                <td colspan="3">
-                                    <input id="busInput" class="input" type="number" disabled="true" style="width:135px;" max="200" min="1" value="1" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                </td>
+            foreach ($busDayTrips as $trip) {
+                $startTime = $trip->getStartTime();
+                $coverTime = $trip->getCoverTime();
+                $color = $trip->getTripColor();
+
+                echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
+            }
+            $yI += 30;
+        }
+        ?>
 
 
-                            </tr>
-
-
-
-
-                            <tr>
-                                <td>
-                                    <input id="intervalCheckBox" type="checkbox" onclick="checkCheckBoxes(event)">
-                                </td>
-
-                                <td>
-                                    ინტერვალი
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td >
-                                                საათი
-                                                <br>
-                                                <input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                            <td >
-                                                წუთი
-                                                <br>
-                                                <input id="intervalInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                            <td>
-                                                წამი
-                                                <br>
-                                                <input id="intervalInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-
-
-                            </tr>
-                            <tr><td colspan="5"></td></tr>
-                            <tr><td colspan="5"><button type="button" class="btn  btn-primary" style="width:100%;" onclick="checkAndCalculate()"><b>გამოთვლა</b></button></td></tr>
-                            <tr><td colspan="5"> 
-                                    <label id="notes"></label>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-
-                <div class="col-sm-7" style="background-color:lavenderblush; height: 400px; overflow:auto"> 
-                    <div >
-
-                        <table class="table table-sm">
-                            <tr>
-                                <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                            </tr>
-                            <tbody id="zeroTableBody">
-                            </tbody>
-                        </table>
-                        <hr>
-                        <div>
-                            <label>ყველა შედეგები</label>
-                            <table class="table table-sm">
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-
-
-
-
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tr>
-                                    <th>#</th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ბრუნის დრო</b></h6></th><th><h6><b>ავტობუსების რაოდენობა</b></h6></th><th><h6><b>ინტერვალი</b></h6></th>
-                                </tr>
-                                <tbody id="allTableBody">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        </svg>
+        <?php
+        foreach ($dayTrips as $busDayTrip) {
+            
+        }
+        ?>
     </body>
 </html>
