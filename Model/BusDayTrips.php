@@ -35,35 +35,38 @@ class BusDayTrips {
     private function getRoundsCount() {
 
         $roundTime = ($this->haltTime * 2) + $this->aTripTime + $this->bTripTime;
-        $timeLaps = $this->lastTripStartTime - $this->firstTripStartTime - ($this->intervalTime * $this->busTripNumber)+1;
+        $timeLaps = $this->lastTripStartTime - $this->firstTripStartTime - ($this->intervalTime * $this->busTripNumber) + 1;
         return $timeLaps / $roundTime;
     }
 
     public function getBusDayTrips() {
         $busDayTripsArray = array();
         $rounds = $this->getRoundsCount();
-        $startTime = $this->firstTripStartTime - $this->haltTime+($this->busTripNumber * $this->intervalTime);
+        $startTime = $this->firstTripStartTime - $this->haltTime + ($this->busTripNumber * $this->intervalTime);
+        $lastTripTime = $this->lastTripStartTime + ($this->busTripNumber * $this->intervalTime);
 
-        while ($rounds > 0) {
+        $halt_1 = new Trip("halt", $startTime, $this->haltTime);
+        array_push($busDayTripsArray, $halt_1);
+        $startTime += $this->haltTime;
+        $dispatcher = 0;
+        
+        while ($startTime <= $lastTripTime) {
 
-            $halt_1 = new Trip("halt", $startTime, $this->haltTime);
-            array_push($busDayTripsArray, $halt_1);
-            $startTime += $this->haltTime;
 
-            $trip = new Trip($this->firstTripType, $startTime, $this->aTripTime);
-            array_push($busDayTripsArray, $trip);
-            $startTime += $this->aTripTime;
-
+            if ($dispatcher % 2 == 0) {
+                $trip = new Trip($this->firstTripType, $startTime, $this->aTripTime);
+                array_push($busDayTripsArray, $trip);
+                $startTime += $this->aTripTime;
+                
+            } else {
+                $trip = new Trip($this->returnTripType, $startTime, $this->bTripTime);
+                array_push($busDayTripsArray, $trip);
+                $startTime += $this->bTripTime;
+            }
+            $dispatcher++;
             $halt_2 = new Trip("halt", $startTime, $this->haltTime);
             array_push($busDayTripsArray, $halt_2);
             $startTime += $this->haltTime;
-
-            $trip = new Trip($this->returnTripType, $startTime, $this->bTripTime);
-            array_push($busDayTripsArray, $trip);
-            $startTime += $this->bTripTime;
-
-
-            $rounds--;
         }
 
         return $busDayTripsArray;

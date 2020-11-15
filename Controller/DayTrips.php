@@ -6,6 +6,8 @@ class DayTrips {
 
     private $dayTrips = array();
     private $busTripNumber;
+    private $abBusTripCount;
+    private $baBusTripCount;
     private $firstTripType;
     private $firstTripStartTime;
     private $lastTripStartTime;
@@ -14,33 +16,54 @@ class DayTrips {
     private $intervalTime;
     private $break;
 
+    function __construct($firstTripStartTime, $lastTripStartTime, $aTripTime, $bTripTime, $abBusTripCount, $baBusTripCount, $intervalTime) {
+        $this->firstTripStartTime = $firstTripStartTime;
+        $this->lastTripStartTime = $lastTripStartTime;
+
+
+
+        $this->aTripTime = $aTripTime;
+        $this->bTripTime = $bTripTime;
+
+        $this->abBusTripCount = $abBusTripCount;
+        $this->baBusTripCount = $baBusTripCount;
+
+
+        $this->intervalTime = $intervalTime;
+    }
+
     public function getDayTrips() {
-        $GoGo=7;
-        $stop=23;
-        $this->firstTripStartTime = ($GoGo-5)*60+30;
-        $this->lastTripStartTime = ($stop-5)*60+30;
-        $this->aTripTime = 55;
-        $this->bTripTime = 55;
-        $this->intervalTime = 15;
+
+        $splittedFirstTripStartTime = explode(":", $this->firstTripStartTime);
+        $firstTripStartHour = $splittedFirstTripStartTime[0];
+        $firstTripStartMinute = $splittedFirstTripStartTime[1];
+
+        $splittedLasttTripStartTime = explode(":", $this->lastTripStartTime);
+        $lastTripStartHour = $splittedLasttTripStartTime[0];
+        $lastTripStartMinute = $splittedLasttTripStartTime[1];
+
+        $this->firstTripStartTime = ($firstTripStartHour - 5) * 60 + $firstTripStartMinute + 30;
+        $this->lastTripStartTime = ($lastTripStartHour - 5) * 60 + $lastTripStartMinute + 30;
+
         $this->breakTime = 15;
-        for ($x = 0; $x < 4; $x++) {
+        for ($x = 0; $x < $this->abBusTripCount; $x++) {
             $this->busTripNumber = $x;
             $this->firstTripType = "a";
 
-            $busDayTrips = new BusDayTrips($this->busTripNumber, $this->firstTripType, $this->firstTripStartTime, $this->lastTripStartTime, $this->aTripTime,$this->bTripTime, $this->intervalTime, $this->breakTime);
+            $busDayTrips = new BusDayTrips($this->busTripNumber, $this->firstTripType, $this->firstTripStartTime, $this->lastTripStartTime, $this->aTripTime, $this->bTripTime, $this->intervalTime, $this->breakTime);
             array_push($this->dayTrips, $busDayTrips->getBusDayTrips());
         }
 
-        for ($x = 0; $x < 4; $x++) {
+        for ($x = 0; $x < $this->baBusTripCount; $x++) {
             $this->busTripNumber = $x;
             $this->firstTripType = "b";
 
-            $busDayTrips = new BusDayTrips($this->busTripNumber, $this->firstTripType, $this->firstTripStartTime, $this->lastTripStartTime,  $this->bTripTime, $this->aTripTime, $this->intervalTime,$this->breakTime);
+            $busDayTrips = new BusDayTrips($this->busTripNumber, $this->firstTripType, $this->firstTripStartTime, $this->lastTripStartTime, $this->bTripTime, $this->aTripTime, $this->intervalTime, $this->breakTime);
             array_push($this->dayTrips, $busDayTrips->getBusDayTrips());
         }
 
 
-       
+
         return $this->dayTrips;
     }
 

@@ -21,7 +21,7 @@
     <body>
 
         <div class="container">
-            <a href="index.php">ძველი ვერსია</a> 
+            <a href="index.php">ძველი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="lab.php">MM</a>
             <div class="row">
 
                 <div class="col-sm-5">
@@ -43,7 +43,7 @@
                                         <tr id="roundTr">
                                             <td >
 
-                                                <input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
                                             </td>
                                             <td >
 
@@ -56,7 +56,7 @@
                                         </tr>
                                         <tr id="roundMinutesTr">
                                             <td colspan="2" style="padding-top:5px; padding-left:40px">
-                                                <input id="roundInputMinutes" class="input" type="number" disabled="true" value="120" style="width:50px;" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputMinutes" class="input" type="number" disabled="true" value="00" style="width:50px;" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
                                             </td>
                                             <td style="padding-top:5px">
 
@@ -75,7 +75,7 @@
                                     ავტ. რაოდ.
                                 </td>
                                 <td colspan="3">
-                                    <input id="busInput" class="input" type="number" disabled="true" style="width:135px;" max="200" min="1" value="1" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                    <input id="busInput" class="input" type="number" disabled="true" style="width:135px;" max="200" min="1" value="0" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
                                 </td>
 
 
@@ -94,7 +94,7 @@
                                         <tr id="intervalTr">
                                             <td >
 
-                                                <input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
                                             </td>
                                             <td >
 

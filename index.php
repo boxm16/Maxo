@@ -26,7 +26,7 @@ and open the template in the editor.
     </head>
     <body>
         <div class="container">
-                <a href="try.php">ახალი ვერსია</a>
+            <a href="try.php">ახალი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="lab.php">MM</a>
             <div class="row">
 
                 <div class="col-sm"> 
@@ -50,16 +50,16 @@ and open the template in the editor.
 
                             <tr id="roundTr">
                                 <td><input id="roundCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
-                                <td >ბრუნის დრო</td><td>საათი<br><input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="02" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
+                                <td >ბრუნის დრო</td><td>საათი<br><input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
 
                             </tr>
                             <tr id="busTr">
                                 <td><input id="busCheckBox" type="checkbox" onclick="checkCheckBoxes(event)" ></td>
-                                <td>ავტობუსების<br> რაოდენობა</td><td colspan="3"><input id="busInput" class="input" type="number" disabled="true" style="width:125px;" max="200" min="1" value="1" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
+                                <td>ავტობუსების<br> რაოდენობა</td><td colspan="3"><input id="busInput" class="input" type="number" disabled="true" style="width:125px;" max="200" min="1" value="0" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
                             </tr>
                             <tr id="intervalTr">
                                 <td><input id="intervalCheckBox" type="checkbox" onclick="checkCheckBoxes(event)"></td>
-                                <td>ინტერვალი</td><td>საათი<br><input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="intervalInputMinute" class="input" type="number" disabled="true" value="10" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="intervalInputSecond" class="input" type="number" disabled="true"  value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
+                                <td>ინტერვალი</td><td>საათი<br><input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წუთი<br><input id="intervalInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td><td>წამი<br><input id="intervalInputSecond" class="input" type="number" disabled="true"  value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)"></td>
                             </tr>
                             <tr><td colspan="5"></td></tr>
                             <tr><td colspan="5"><button type="button" class="btn  btn-primary" style="width:100%;" onclick="checkAndCalculate()"><b>გამოთვლა</b></button></td></tr>
