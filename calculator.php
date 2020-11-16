@@ -46,7 +46,7 @@ and open the template in the editor.
                             </td>
                             <td>სიჩქარე(კმ/ს)</td>
                             <td colspan="3">
-                                <input id="speedInput" type="number" class="input" style="width:100%" value="0" disabled="true" onkeyup="incoming(event)">
+                                <input id="speedInput" type="number" class="input" style="width:100%" value="15" disabled="true" onkeyup="incoming(event)">
                             </td>
                         </tr>
                         <tr>

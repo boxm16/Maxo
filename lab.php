@@ -10,18 +10,17 @@ if (!empty($_POST)) {
     $baBusCount = $_POST["baBusCount"];
     $intervalTime = $_POST["intervalTime"];
 } else {
-    $firstTripStartTime ="08:00";
+    $firstTripStartTime = "08:00";
     $lastTripStartTime = "21:00";
     $aTripTime = 55;
     $bTripTime = 55;
     $abBusCount = 4;
     $baBusCount = 4;
-    $intervalTime =15;
+    $intervalTime = 15;
 }
 $DayTrips = new DayTrips($firstTripStartTime, $lastTripStartTime, $aTripTime, $bTripTime, $abBusCount, $baBusCount, $intervalTime);
 
 $dayTrips = $DayTrips->getDayTrips();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +34,7 @@ $dayTrips = $DayTrips->getDayTrips();
 
         <style>
             input[type="number"] {
-                width:50px;
+                width:60px;
             }
             table, tr, td, th {
                 border:1px solid black;
@@ -68,11 +67,11 @@ $dayTrips = $DayTrips->getDayTrips();
                                 <td>
                                     <input name="lastTripStartTime" type="time" value="<?php echo $lastTripStartTime ?>">
                                 </td>
-                                <td><input name="aTripTime" type="number" value="<?php echo $aTripTime ?>"></td>
-                                <td><input name="bTripTime" type="number" value="<?php echo $bTripTime ?>"></td>
+                                <td><input name="aTripTime" type="number" value="<?php echo $aTripTime ?>" step="any"></td>
+                                <td><input name="bTripTime" type="number" value="<?php echo $bTripTime ?>" step="any"></td>
                                 <td><input name="abBusCount" type="number" value="<?php echo $abBusCount ?>"></td>
                                 <td><input name="baBusCount" type="number" value="<?php echo $baBusCount ?>"></td>
-                                <td><input name="intervalTime" type="number" value="<?php echo $intervalTime ?>"></td>
+                                <td><input name="intervalTime" type="number" value="<?php echo $intervalTime ?>" step="any"></td>
                             </tr>
                         </table>
 
@@ -116,6 +115,9 @@ $dayTrips = $DayTrips->getDayTrips();
                             $color = $trip->getTripColor();
 
                             echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
+                           $textStartPoint=$startTime+3;
+                           $yB=$yI+15;
+                            echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:white;'>".$trip->getInsideText()."</text>";
                         }
                         $yI += 30;
                     }

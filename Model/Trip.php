@@ -5,6 +5,7 @@ class Trip {
     private $type;
     private $startTime;
     private $coverTime;
+ 
 
     function __construct($type, $startTime, $coverTime) {
         $this->type = $type;
@@ -48,6 +49,24 @@ class Trip {
         }
     
         
+    }
+    
+    public function getInsideText(){
+        if($this->type=="a"||$this->type=="b"){
+            $A=$this->startTime-30;
+            $B=intval($A/60);
+            $H=$B+5;
+            $M=$A%60;
+            if($H<10){
+                $H="0".$H;
+            }
+           if($M<10){
+               $M="0".$M;
+           }
+            
+           return $H.":".$M;  
+        }
+        return "";
     }
 
 }

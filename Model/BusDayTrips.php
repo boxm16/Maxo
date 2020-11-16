@@ -14,6 +14,7 @@ class BusDayTrips {
     private $haltTime;
     private $intervalTime;
     private $breakTime;
+    
 
     function __construct($busTripNumber, $firstTripType, $firstTripStartTime, $lastTripStartTime, $aTripTime, $bTripTime, $intervalTime, $breakTime) {
         $this->busTripNumber = $busTripNumber;
