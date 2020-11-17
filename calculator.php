@@ -37,7 +37,7 @@ and open the template in the editor.
                             </td>
                             <td>მანძილი(კმ)</td>
                             <td colspan="3">
-                                <input id="distanceInput" type="number" class="input" style="width:100%" value="0" disabled="true" onkeyup="incoming(event)">
+                                <input id="distanceInput" type="number" class="input" style="width:100%" value="0" disabled="true" onkeyup="incoming(event)" onfocus="this.select()">
                             </td>
                         </tr>
                         <tr>
@@ -46,7 +46,7 @@ and open the template in the editor.
                             </td>
                             <td>სიჩქარე(კმ/ს)</td>
                             <td colspan="3">
-                                <input id="speedInput" type="number" class="input" style="width:100%" value="15" disabled="true" onkeyup="incoming(event)">
+                                <input id="speedInput" type="number" class="input" style="width:100%" value="15" disabled="true" onkeyup="incoming(event)" onfocus="this.select()">
                             </td>
                         </tr>
                         <tr>
@@ -55,13 +55,13 @@ and open the template in the editor.
                             </td>
                             <td>დრო</td>
                             <td style="padding-left:0px; padding-right: 0px" >
-                                <input id="hourInput" type="number" class="input" value="00" disabled="true" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                <input id="hourInput" type="number" class="input" value="00" disabled="true" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                             </td>
                             <td style="padding-left:0px; padding-right: 0px">
-                                <input id="minuteInput" type="number" class="input" value="00"  disabled="true"  oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                <input id="minuteInput" type="number" class="input" value="00"  disabled="true"  oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                             </td>
                             <td style="padding-left:0px; padding-right: 0px">
-                                <input id="secondInput" type="number" class="input" value="00" disabled="true"  oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                <input id="secondInput" type="number" class="input" value="00" disabled="true"  oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                             </td>
                         </tr>
                         <tr>
