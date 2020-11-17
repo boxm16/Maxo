@@ -43,24 +43,24 @@
                                         <tr id="roundTr">
                                             <td >
 
-                                                <input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                             <td >
 
-                                                <input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                             <td>
 
-                                                <input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                         </tr>
                                         <tr id="roundMinutesTr">
                                             <td colspan="2" style="padding-top:5px; padding-left:40px">
-                                                <input id="roundInputMinutes" class="input" type="number" disabled="true" value="00" style="width:50px;" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputMinutes" class="input" type="number" disabled="true" value="00" style="width:50px;" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                             <td style="padding-top:5px">
 
-                                                <input id="roundInputSeconds" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="roundInputSeconds" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td> 
                                         </tr>
                                     </table>
@@ -75,7 +75,7 @@
                                     ავტ. რაოდ.
                                 </td>
                                 <td colspan="3">
-                                    <input id="busInput" class="input" type="number" disabled="true" style="width:135px;" max="200" min="1" value="0" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                    <input id="busInput" class="input" type="number" disabled="true" style="width:135px;" max="200" min="1" value="0" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                 </td>
 
 
@@ -94,15 +94,15 @@
                                         <tr id="intervalTr">
                                             <td >
 
-                                                <input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="intervalInputHour" class="input" type="number" min="-1" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                             <td >
 
-                                                <input id="intervalInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="intervalInputMinute" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                             <td>
 
-                                                <input id="intervalInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)">
+                                                <input id="intervalInputSecond" class="input" type="number" disabled="true" value="00" oninput="adjastTimeInputs(event)" onkeyup="incoming(event)" onfocus="this.select()">
                                             </td>
                                         </tr>
                                     </table>
@@ -284,23 +284,32 @@
                 hNumber = h.length;
             }
 
-            function calculate() {
-                var seconds = (roundInputHour.value * 60 * 60) + (roundInputMinute.value * 60) + parseInt(roundInputSecond.value);
+            function getRoundSeconds() {
+                return  (roundInputHour.value * 60 * 60) + (roundInputMinute.value * 60) + parseInt(roundInputSecond.value);
 
+            }
+
+            function getIntervalSeconds() {
+                return (intervalInputHour.value * 60 * 60) + (intervalInputMinute.value * 60) + intervalInputSecond.value * 1;
+            }
+
+            function calculate() {
+                var seconds = getRoundSeconds();
                 if (roundCheckBox.checked === true & busCheckBox.checked === true) {
 
                     calculateInterval(seconds);
                 } else if (roundCheckBox.checked === true & intervalCheckBox.checked === true) {
                     calculateBus(seconds);
                 } else if (busCheckBox.checked === true & intervalCheckBox.checked === true) {
-                    calculateRound(seconds);
+                    calculateRound();
                 }
                 copyHoursToMinutes();
                 calculateTable();
 
             }
-            function calculateRound(seconds) {
-                var seconds = (intervalInputHour.value * 60 * 60) + (intervalInputMinute.value * 60) + intervalInputSecond.value * 1;
+            function calculateRound() {
+                var seconds = getIntervalSeconds();
+                ;
                 var result = seconds * busInput.value;
 
                 var date = new Date(0);
@@ -315,7 +324,7 @@
             }
 
             function calculateBus(seconds) {
-                var intervalSeconds = (intervalInputHour.value * 60 * 60) + (intervalInputMinute.value * 60) + parseInt(intervalInputSecond.value);
+                var intervalSeconds = getIntervalSeconds();
 
                 var result = seconds / intervalSeconds;
                 var nashti = result % 1;
@@ -389,8 +398,8 @@
                     busCounts.push(busCount);
                     busCount++;
                     busCounts.push(busCount);
-                }else {
-                   busCounts.push(busCount); 
+                } else {
+                    busCounts.push(busCount);
                 }
 
 
@@ -460,9 +469,9 @@
                     //  redNotes.innerHTML = "მითითებული ინტერვალი დაუშვებელია (0). ინტერვალი უნდა იყოს არანაკლებ 1 წამი";
                     return false;
                 }
-                if (busCheckBox.checked & (busInput.value<=0)) {
+                if (busCheckBox.checked & (busInput.value <= 0)) {
                     notes.style.color = "red";
-                    notes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი ("+busInput.value+")";
+                    notes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (" + busInput.value + ")";
                     // redNotes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
                     return false;
                 }
