@@ -460,9 +460,9 @@
                     //  redNotes.innerHTML = "მითითებული ინტერვალი დაუშვებელია (0). ინტერვალი უნდა იყოს არანაკლებ 1 წამი";
                     return false;
                 }
-                if (busCheckBox.checked & busInput.value == 0) {
+                if (busCheckBox.checked & (busInput.value<=0)) {
                     notes.style.color = "red";
-                    notes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
+                    notes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი ("+busInput.value+")";
                     // redNotes.innerHTML = " ავტობუსების რაოდენობის ველში მითითებულია დაუშვებელი რიცხვი (0)";
                     return false;
                 }
