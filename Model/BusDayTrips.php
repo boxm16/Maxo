@@ -9,14 +9,16 @@ class BusDayTrips {
     private $returnTripType;
     private $firstTripStartTime;
     private $lastTripStartTime;
-    private $aTripTime;
-    private $bTripTime;
+    private $aTripTimeMinute;
+    private $aTripTimeSecond;
+    private $bTripTimeMinute;
+    private $bTripTimeSecond;
     private $haltTime;
-    private $intervalTime;
+    private $intervalTimeMinute;
+    private $intervalTimeSecond;
     private $breakTime;
-    
 
-    function __construct($busTripNumber, $firstTripType, $firstTripStartTime, $lastTripStartTime, $aTripTime, $bTripTime, $intervalTime, $breakTime) {
+    function __construct($busTripNumber, $firstTripType, $firstTripStartTime, $lastTripStartTime, $aTripTimeMinute, $aTripTimeSecond, $bTripTimeMinute, $bTripTimeSecond, $intervalTimeMinute, $intervalTimeSecond, $breakTime) {
         $this->busTripNumber = $busTripNumber;
         $this->firstTripType = $firstTripType;
         if ($this->firstTripType == "a") {
@@ -26,48 +28,74 @@ class BusDayTrips {
         }
         $this->firstTripStartTime = $firstTripStartTime;
         $this->lastTripStartTime = $lastTripStartTime;
-        $this->aTripTime = $aTripTime;
-        $this->bTripTime = $bTripTime;
-        $this->intervalTime = $intervalTime;
+        $this->aTripTimeMinute = $aTripTimeMinute;
+        $this->aTripTimeSecond = $aTripTimeSecond;
+        $this->bTripTimeMinute = $bTripTimeMinute;
+        $this->bTripTimeSecond = $bTripTimeSecond;
+        $this->intervalTimeMinute = $intervalTimeMinute;
+        $this->intervalTimeSecond = $intervalTimeSecond;
         $this->breakTime = $breakTime;
         $this->haltTime = 5;
     }
 
-    private function getRoundsCount() {
+    private function timeToSeconds($time) {
+        $timeExploded = explode(':', $time);
+        if (isset($timeExploded[2])) {
 
-        $roundTime = ($this->haltTime * 2) + $this->aTripTime + $this->bTripTime;
-        $timeLaps = $this->lastTripStartTime - $this->firstTripStartTime - ($this->intervalTime * $this->busTripNumber) + 1;
-        return $timeLaps / $roundTime;
+            return $timeExploded[0] * 3600 + $timeExploded[1] * 60 + $timeExploded[2];
+        }
+
+        return $timeExploded[0] * 3600 + $timeExploded[1] * 60;
     }
 
     public function getBusDayTrips() {
         $busDayTripsArray = array();
-        $rounds = $this->getRoundsCount();
-        $startTime = $this->firstTripStartTime - $this->haltTime + ($this->busTripNumber * $this->intervalTime);
-        $lastTripTime = $this->lastTripStartTime + ($this->busTripNumber * $this->intervalTime);
+        $splittedFirstTripStartTime = explode(":", $this->firstTripStartTime);
+        $firstTripStartHour = $splittedFirstTripStartTime[0];
+        $firstTripStartMinute = $splittedFirstTripStartTime[1];
 
-        $halt_1 = new Trip("halt", $startTime, $this->haltTime);
+
+        $splittedLasttTripStartTime = explode(":", $this->lastTripStartTime);
+        $lastTripStartHour = $splittedLasttTripStartTime[0];
+        $lastTripStartMinute = $splittedLasttTripStartTime[1];
+
+        $firstTirpStartTimeInSeconds = $this->timeToSeconds($this->firstTripStartTime);
+        $lastTirpStartTimeInSeconds = $this->timeToSeconds($this->lastTripStartTime);
+
+
+        $this->firstTripStartTime = ($firstTripStartHour - 5) * 60 + $firstTripStartMinute + 30;
+        $this->lastTripStartTime = ($lastTripStartHour - 5) * 60 + $lastTripStartMinute + 30;
+
+
+        $startTime = $this->firstTripStartTime - $this->haltTime + ($this->busTripNumber * ($this->intervalTimeMinute + $this->intervalTimeSecond / 60));
+        $startTimeInSeconds = $firstTirpStartTimeInSeconds - ($this->haltTime * 60) + ($this->busTripNumber * ($this->intervalTimeMinute * 60 + $this->intervalTimeSecond));
+
+        $halt_1 = new Trip("halt", $startTime, $startTimeInSeconds, $this->haltTime);
         array_push($busDayTripsArray, $halt_1);
         $startTime += $this->haltTime;
+        $startTimeInSeconds += $this->haltTime * 60;
+
         $dispatcher = 0;
-        
-        while ($startTime <= $lastTripTime) {
+
+        while ($startTimeInSeconds <= $lastTirpStartTimeInSeconds) {
 
 
             if ($dispatcher % 2 == 0) {
-                $trip = new Trip($this->firstTripType, $startTime, $this->aTripTime);
+                $trip = new Trip($this->firstTripType, $startTime, $startTimeInSeconds, $this->aTripTimeMinute);
                 array_push($busDayTripsArray, $trip);
-                $startTime += $this->aTripTime;
-                
+                $startTime += $this->aTripTimeMinute;
+                $startTimeInSeconds += (($this->aTripTimeMinute * 60) + $this->aTripTimeSecond);
             } else {
-                $trip = new Trip($this->returnTripType, $startTime, $this->bTripTime);
+                $trip = new Trip($this->returnTripType, $startTime, $startTimeInSeconds, $this->bTripTimeMinute);
                 array_push($busDayTripsArray, $trip);
-                $startTime += $this->bTripTime;
+                $startTime += $this->bTripTimeMinute;
+                $startTimeInSeconds += (($this->bTripTimeMinute * 60) + $this->bTripTimeSecond);
             }
             $dispatcher++;
-            $halt_2 = new Trip("halt", $startTime, $this->haltTime);
+            $halt_2 = new Trip("halt", $startTime, $startTimeInSeconds, $this->haltTime);
             array_push($busDayTripsArray, $halt_2);
             $startTime += $this->haltTime;
+            $startTimeInSeconds += $this->haltTime * 60;
         }
 
         return $busDayTripsArray;

@@ -10,18 +10,12 @@ and open the template in the editor.
         <title></title>
     </head>
     <body>
-        <input type="number" onClick="this.select()" value="4" />
 
-        <input type="number" onClick="this.select();" value="5" />
-
-        <input type="number" id="text-box" size="20" value="3">
-        <button onclick="selectText()">Select text</button>
-    <script>
-        function selectText() {
-        const input = document.getElementById('text-box');
-        input.focus();
-        input.select();
-        }
-    </script>
-</body>
+        <?php
+$seconds=29760;
+        echo $seconds;;
+       echo gmdate("H:i:s", $seconds);
+        
+        ?>
+    </body>
 </html>

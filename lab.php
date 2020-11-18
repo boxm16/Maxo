@@ -4,21 +4,28 @@ require_once 'Controller/DayTrips.php';
 if (!empty($_POST)) {
     $firstTripStartTime = $_POST["firstTripStartTime"];
     $lastTripStartTime = $_POST["lastTripStartTime"];
-    $aTripTime = $_POST["aTripTime"];
-    $bTripTime = $_POST["bTripTime"];
+    $aTripTimeMinute = $_POST["aTripTimeMinute"];
+    $aTripTimeSecond = $_POST["aTripTimeSecond"];
+    $bTripTimeMinute = $_POST["bTripTimeMinute"];
+    $bTripTimeSecond = $_POST["bTripTimeSecond"];
     $abBusCount = $_POST["abBusCount"];
     $baBusCount = $_POST["baBusCount"];
-    $intervalTime = $_POST["intervalTime"];
+    $intervalTimeMinute = $_POST["intervalTimeMinute"];
+    $intervalTimeSecond = $_POST["intervalTimeSecond"];
 } else {
-    $firstTripStartTime = "08:00";
-    $lastTripStartTime = "21:00";
-    $aTripTime = 55;
-    $bTripTime = 55;
+    $firstTripStartTime = "08:00:00";
+    $lastTripStartTime = "21:00:00";
+    $aTripTimeMinute = 55;
+    $aTripTimeSecond = 00;
+    $bTripTimeMinute = 55;
+    $bTripTimeSecond = 00;
     $abBusCount = 4;
     $baBusCount = 4;
-    $intervalTime = 15;
+    $intervalTimeMinute = 15;
+    $intervalTimeSecond = 00;
 }
-$DayTrips = new DayTrips($firstTripStartTime, $lastTripStartTime, $aTripTime, $bTripTime, $abBusCount, $baBusCount, $intervalTime);
+
+$DayTrips = new DayTrips($firstTripStartTime, $lastTripStartTime, $aTripTimeMinute, $aTripTimeSecond, $bTripTimeMinute, $bTripTimeSecond, $abBusCount, $baBusCount, $intervalTimeMinute, $intervalTimeSecond);
 
 $dayTrips = $DayTrips->getDayTrips();
 ?>
@@ -54,24 +61,28 @@ $dayTrips = $DayTrips->getDayTrips();
                                 <tr>
 
                                     <th colspan="2">პერიოდი</th>
-                                    <th>A წირის დრო<br>წუთებში</th>
-                                    <th>B წირის დრო<br>წუთებში</th>
+                                    <th colspan="2">A წირის დრო<br>წუთებში</th>
+                                    <th colspan="2">B წირის დრო<br>წუთებში</th>
                                     <th>A-B <br>ავტობუსების<br> რაოდენობა </th>
                                     <th>B-A <br>ავტობუსების<br> რაოდენობა</th>
-                                    <th>ინტერვალის<br> დრო</th>
+                                    <th colspan="2">ინტერვალის<br> დრო</th>
                                 </tr>
                             </thead>
                             <tr><td>
-                                    <input name="firstTripStartTime" type="time" value="<?php echo $firstTripStartTime ?>">
+                                    <input name="firstTripStartTime" type="time" step="1" value="<?php echo $firstTripStartTime ?>">
                                 </td>
                                 <td>
-                                    <input name="lastTripStartTime" type="time" value="<?php echo $lastTripStartTime ?>">
+                                    <input name="lastTripStartTime" type="time" step="1" value="<?php echo $lastTripStartTime ?>">
                                 </td>
-                                <td><input name="aTripTime" type="number" value="<?php echo $aTripTime ?>" step="any"></td>
-                                <td><input name="bTripTime" type="number" value="<?php echo $bTripTime ?>" step="any"></td>
+                                <td><input name="aTripTimeMinute" type="number" value="<?php echo $aTripTimeMinute ?>" step="any"></td>
+                                <td><input name="aTripTimeSecond" type="number" value="<?php echo $aTripTimeSecond ?>" step="any"></td>
+                                <td><input name="bTripTimeMinute" type="number" value="<?php echo $bTripTimeMinute ?>" step="any"></td>
+                                <td><input name="bTripTimeSecond" type="number" value="<?php echo $bTripTimeSecond ?>" step="any"></td>
                                 <td><input name="abBusCount" type="number" value="<?php echo $abBusCount ?>"></td>
                                 <td><input name="baBusCount" type="number" value="<?php echo $baBusCount ?>"></td>
-                                <td><input name="intervalTime" type="number" value="<?php echo $intervalTime ?>" step="any"></td>
+                                <td><input name="intervalTimeMinute" type="number" value="<?php echo $intervalTimeMinute ?>" step="any"></td>
+                                <td><input name="intervalTimeSecond" type="number" value="<?php echo $intervalTimeSecond ?>" step="any"></td>
+
                             </tr>
                         </table>
 
@@ -113,11 +124,13 @@ $dayTrips = $DayTrips->getDayTrips();
                             $startTime = $trip->getStartTime();
                             $coverTime = $trip->getCoverTime();
                             $color = $trip->getTripColor();
+                            $timeInt = intval($trip->getInsideText());
+                            $time = gmdate("H:i:s", $timeInt);
 
-                            echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
-                           $textStartPoint=$startTime+3;
-                           $yB=$yI+15;
-                            echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:white;'>".$trip->getInsideText()."</text>";
+                           echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
+                            $textStartPoint = $startTime +5;
+                            $yB = $yI + 15;
+                              echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:black;'>" . $time . "</text>";
                         }
                         $yI += 30;
                     }
@@ -125,11 +138,15 @@ $dayTrips = $DayTrips->getDayTrips();
 
 
                     </svg>
-                    <?php
-                    foreach ($dayTrips as $busDayTrip) {
-                        
-                    }
-                    ?>
+<?php
+foreach ($busDayTrips as $trip) {
+
+    $timeInt = intval($trip->getInsideText());
+    $time = gmdate("H:i:s", $timeInt);
+
+    echo $time . "<br>";
+}
+?>
                 </div>
             </div>
         </div>

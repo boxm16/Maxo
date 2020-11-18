@@ -4,12 +4,13 @@ class Trip {
 
     private $type;
     private $startTime;
+    private $startTimeInSeconds;
     private $coverTime;
- 
 
-    function __construct($type, $startTime, $coverTime) {
+    function __construct($type, $startTime, $startTimeInSeconds, $coverTime) {
         $this->type = $type;
         $this->startTime = $startTime;
+        $this->startTimeInSeconds = $startTimeInSeconds;
         $this->coverTime = $coverTime;
     }
 
@@ -38,33 +39,20 @@ class Trip {
     }
 
     function getTripColor() {
-        if($this->type=="halt"){
+        if ($this->type == "halt") {
             return "black";
         }
-        if($this->type=="a"){
+        if ($this->type == "a") {
             return "blue";
         }
-        if($this->type=="b"){
+        if ($this->type == "b") {
             return "green";
         }
-    
-        
     }
-    
-    public function getInsideText(){
-        if($this->type=="a"||$this->type=="b"){
-            $A=$this->startTime-30;
-            $B=intval($A/60);
-            $H=$B+5;
-            $M=$A%60;
-            if($H<10){
-                $H="0".$H;
-            }
-           if($M<10){
-               $M="0".$M;
-           }
-            
-           return $H.":".$M;  
+
+    public function getInsideText() {
+        if ($this->type == "a" || $this->type == "b") {
+            return $this->startTimeInSeconds;
         }
         return "";
     }
