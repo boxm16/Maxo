@@ -48,6 +48,9 @@ class Trip {
         if ($this->type == "b") {
             return "green";
         }
+        if ($this->type == "break") {
+            return "yellow";
+        }
     }
 
     public function getInsideText() {
@@ -55,6 +58,22 @@ class Trip {
             return $this->startTimeInSeconds;
         }
         return "";
+    }
+
+    public function getStartTimeInSeconds() {
+        if ($this->type == "a" | $this->type == "b" | $this->type == "break") {
+            return $this->startTimeInSeconds;
+        } else {
+            return "";
+        }
+    }
+
+    public function getEndTimeInSeconds() {
+        if ($this->type == "a" | $this->type == "b" | $this->type == "break") {
+            return $this->startTimeInSeconds+($this->coverTime*60);
+        } else {
+            return "";
+        }
     }
 
 }

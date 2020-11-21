@@ -12,6 +12,8 @@ if (!empty($_POST)) {
     $baBusCount = $_POST["baBusCount"];
     $intervalTimeMinute = $_POST["intervalTimeMinute"];
     $intervalTimeSecond = $_POST["intervalTimeSecond"];
+    $breakTime = $_POST["breakTime"];
+ 
 } else {
     $firstTripStartTime = "08:00:00";
     $lastTripStartTime = "21:00:00";
@@ -23,9 +25,10 @@ if (!empty($_POST)) {
     $baBusCount = 4;
     $intervalTimeMinute = 15;
     $intervalTimeSecond = 00;
+    $breakTime = 30;
 }
 
-$DayTrips = new DayTrips($firstTripStartTime, $lastTripStartTime, $aTripTimeMinute, $aTripTimeSecond, $bTripTimeMinute, $bTripTimeSecond, $abBusCount, $baBusCount, $intervalTimeMinute, $intervalTimeSecond);
+$DayTrips = new DayTrips($firstTripStartTime, $lastTripStartTime, $aTripTimeMinute, $aTripTimeSecond, $bTripTimeMinute, $bTripTimeSecond, $abBusCount, $baBusCount, $intervalTimeMinute, $intervalTimeSecond, $breakTime);
 
 $dayTrips = $DayTrips->getDayTrips();
 ?>
@@ -54,6 +57,7 @@ $dayTrips = $DayTrips->getDayTrips();
             <div class="row">
                 <div class="col">
                     <a href="index.php">უკან დაბრუნება</a> 
+
                     <hr>
                     <form action="lab.php" method="POST" >
                         <table class="table">
@@ -66,6 +70,7 @@ $dayTrips = $DayTrips->getDayTrips();
                                     <th>A-B <br>ავტობუსების<br> რაოდენობა </th>
                                     <th>B-A <br>ავტობუსების<br> რაოდენობა</th>
                                     <th colspan="2">ინტერვალის<br> დრო</th>
+                                    <th >შესვენება</th>
                                 </tr>
                             </thead>
                             <tr><td>
@@ -82,6 +87,7 @@ $dayTrips = $DayTrips->getDayTrips();
                                 <td><input name="baBusCount" type="number" value="<?php echo $baBusCount ?>"></td>
                                 <td><input name="intervalTimeMinute" type="number" value="<?php echo $intervalTimeMinute ?>" step="any"></td>
                                 <td><input name="intervalTimeSecond" type="number" value="<?php echo $intervalTimeSecond ?>" step="any"></td>
+                                <td><input name="breakTime" type="number" value="<?php echo $breakTime ?>" step="any"></td>
 
                             </tr>
                         </table>
@@ -91,7 +97,7 @@ $dayTrips = $DayTrips->getDayTrips();
                     </form>
                     <hr>
                     <?php $height = 300; ?>
-                    <svg width="1500" height="610">
+                    <svg width="1500" height="350">
                     <rect x="5" width="1530" height="20" style="fill:rgb(0,0,0);" />
                     <rect x="5" width="20" height="<?php echo $height ?>" style="fill:rgb(0,0,0);" />
                     <?php
@@ -124,13 +130,16 @@ $dayTrips = $DayTrips->getDayTrips();
                             $startTime = $trip->getStartTime();
                             $coverTime = $trip->getCoverTime();
                             $color = $trip->getTripColor();
-                            $timeInt = intval($trip->getInsideText());
-                            $time = gmdate("H:i:s", $timeInt);
+                            $timeInt = intval($trip->getStartTimeInSeconds());
+                            $time = "";
+                            if ($timeInt > 0) {
+                                $time = gmdate("H:i:s", $timeInt);
+                            }
 
-                           echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
-                            $textStartPoint = $startTime +5;
+                            echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
+                            $textStartPoint = $startTime + 5;
                             $yB = $yI + 15;
-                              echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:black;'>" . $time . "</text>";
+                            echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:black;'>" . $time . "</text>";
                         }
                         $yI += 30;
                     }
@@ -138,15 +147,65 @@ $dayTrips = $DayTrips->getDayTrips();
 
 
                     </svg>
-<?php
-foreach ($busDayTrips as $trip) {
 
-    $timeInt = intval($trip->getInsideText());
-    $time = gmdate("H:i:s", $timeInt);
+                    <hr>
+                    <?php $height = 300; ?>
+                    <svg width="1500" height="400">
+                    <rect x="5" width="1530" height="20" style="fill:rgb(0,0,0);" />
+                    <rect x="5" width="20" height="<?php echo $height ?>" style="fill:rgb(0,0,0);" />
+                    <?php
+                    $x = 30;
+                    $y = 30;
+                    $lap = 1200 / 20;
+                    $time = "05";
+                    for ($a = 0; $a < 21; $a++) {
+                        echo " <line x1='$x' y1='20' x2='$x' y2='$height' style='stroke:rgb(0,0,0);stroke-width:1' />";
+                        $tp = $x - 17;
 
-    echo $time . "<br>";
-}
-?>
+                        $timeF = $time . ":00";
+                        echo "<text x='$tp' y='15' fill='white'>$timeF</text>";
+                        $time++;
+                        if ($time < 10) {
+                            $time = "0" . $time;
+                        }
+                        if ($time == 25) {
+                            $time = "01";
+                        }
+                        $x += $lap;
+                    }
+
+
+//--------------------------------------------------------//
+                    $yI = 30;
+
+                    $dayTripsWithBreak = $DayTrips->getDayTripsWithBreak();
+                    foreach ($dayTripsWithBreak as $busDayTrips) {
+
+                        foreach ($busDayTrips as $trip) {
+                            $startTime = $trip->getStartTime();
+                            $coverTime = $trip->getCoverTime();
+                            $color = $trip->getTripColor();
+                            $timeInt = intval($trip->getStartTimeInSeconds());
+                            $time = "";
+                            if ($timeInt > 0) {
+                                $time = gmdate("H:i:s", $timeInt);
+                            }
+
+                            echo "<rect x='$startTime' y='$yI' width='$coverTime' height='20'  rx='7' style='fill:$color' />";
+                            $textStartPoint = $startTime + 5;
+                            $yB = $yI + 15;
+                            echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:black;'>" . $time . "</text>";
+                        }
+                        $yI += 30;
+                    }
+                    ?>
+
+
+                    </svg>
+                    <hr>
+                    <div>
+                        <?php echo $DayTrips->getBreaksPoolCount(); ?>
+                    </div>
                 </div>
             </div>
         </div>
