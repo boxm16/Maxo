@@ -21,7 +21,7 @@
     <body>
 
         <div class="container">
-            <a href="index.php">ძველი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="graphical.php">MM</a>
+            <a href="index.php">ძველი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="graphical.php" target="_blank">MM</a>
             <div class="row">
 
                 <div class="col-sm-5">
