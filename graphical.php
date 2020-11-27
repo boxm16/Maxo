@@ -29,7 +29,7 @@ if (!empty($_POST)) {
     $breakTimeMinutes = 30;
     $breakTimeSeconds = 00;
 }
-require_once 'Controller/RouteControllerExperiment.php';
+require_once 'Controller/RouteController.php';
 $routeController = new RouteController($starterTrip, $firstTripStartTime, $lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $abBusCount, $baBusCount, $intervalTimeMinutes, $intervalTimeSeconds, $breakTimeMinutes, $breakTimeSeconds);
 $allVersions = $routeController->getAllVersions();
 
