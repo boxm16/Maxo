@@ -12,10 +12,7 @@ and open the template in the editor.
     <body>
 
         <?php
-$seconds=29760;
-        echo $seconds;;
-       echo gmdate("H:i:s", $seconds);
-        
+        echo true;
         ?>
     </body>
 </html>
