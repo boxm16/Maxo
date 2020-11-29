@@ -32,7 +32,7 @@ if (!empty($_POST)) {
 require_once 'Controller/RouteController.php';
 $routeController = new RouteController($starterTrip, $firstTripStartTime, $lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $abBusCount, $baBusCount, $intervalTimeMinutes, $intervalTimeSeconds, $breakTimeMinutes, $breakTimeSeconds);
 $allVersions = $routeController->getAllVersions();
-
+$allVersionsWithBreak = $routeController->getAllVersionsWithBreak();
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +81,7 @@ $allVersions = $routeController->getAllVersions();
                                     A_B &nbsp;<input type="radio" name="starterTrip" value="ab" <?php if ($starterTrip == "ab") echo "checked"; ?> 
                                                      >
                                     <br>
-                                    B_A &nbsp;<input type="radio" name="starterTrip" value="ba" <?php  if ($starterTrip == "ba") echo "checked"; ?>>
+                                    B_A &nbsp;<input type="radio" name="starterTrip" value="ba" <?php if ($starterTrip == "ba") echo "checked"; ?>>
                                 </td>
                                 <td>
                                     <input name="firstTripStartTime" type="time" step="1" value="<?php echo $firstTripStartTime ?>">
@@ -156,6 +156,64 @@ $allVersions = $routeController->getAllVersions();
                         //----------------------------------------------------------------
                         $yI = 30;
                         foreach ($routeVersion as $busTrip) {
+                            $tripPeriods = $busTrip->getTripPeriods();
+                            foreach ($tripPeriods as $tripPeriod) {
+                                $startPoint = $tripPeriod->getStartPoint();
+                                $length = $tripPeriod->getLength();
+                                $color = $tripPeriod->getPeriodColor();
+                                $timeInt = intval($tripPeriod->getStartTimeInSeconds());
+                                $time = "";
+                                if ($timeInt > 0) {
+                                    $time = gmdate("H:i:s", $timeInt);
+                                }
+
+                                echo "<rect x='$startPoint' y='$yI' width='$length' height='20'  rx='7' style='fill:$color' />";
+                                $textStartPoint = $startPoint + 5;
+                                $yB = $yI + 15;
+                                echo "<text x='$textStartPoint' y='$yB' class='small' style='fill:white;'>" . $time . "</text>";
+                            }
+                            $yI += 30;
+                        }
+
+                        echo '</svg>'
+                        . '<hr>';
+                    }
+                    ?>
+                    <hr style="height:30px;border-width:0;color:gray;background-color:red">
+                    <center><h1>Route Variation With Breaks</h1></center>
+                    <?php
+                    //-----------??---------------//-------------//-----------//----------//
+                    ////this is a part for versions with break/////
+                    foreach ($allVersionsWithBreak as $routeVersion) {
+
+                        $height = 300;
+                        $x = 30;
+                        $y = 30;
+                        $lap = 1200 / 20;
+                        $time = "05";
+                        echo "<svg width='1500' height='400'>"
+                        . "<rect x='5' width='1530' height='20' style='fill:rgb(0,0,0);' />"
+                        . "<rect x='5' width='20' height=$height style='fill:rgb(0,0,0);' />";
+
+                        for ($a = 0; $a < 21; $a++) {
+                            echo " <line x1='$x' y1='20' x2='$x' y2='$height' style='stroke:rgb(0,0,0);stroke-width:1' />";
+                            $tp = $x - 17;
+
+                            $timeF = $time . ":00";
+                            echo "<text x='$tp' y='15' fill='white'>$timeF</text>";
+                            $time++;
+                            if ($time < 10) {
+                                $time = "0" . $time;
+                            }
+                            if ($time == 25) {
+                                $time = "01";
+                            }
+                            $x += $lap;
+                        }
+                        //----------------------------------------------------------------
+                        $yI = 30;
+                        foreach ($routeVersion as $busTrip) {
+                           
                             $tripPeriods = $busTrip->getTripPeriods();
                             foreach ($tripPeriods as $tripPeriod) {
                                 $startPoint = $tripPeriod->getStartPoint();

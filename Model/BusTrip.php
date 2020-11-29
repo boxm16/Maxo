@@ -26,10 +26,16 @@ class BusTrip {
         $this->breakTimeMinutes = $breakTimeMinutes;
         $this->breakTimeSeconds = $breakTimeSeconds;
         $this->tripPeriods = array();
+        $this->createTripPeriods();
     }
 
     public function getTripPeriods() {
+        return $this->tripPeriods;
+    }
 
+    public function createTripPeriods() {
+
+        $this->tripPeriods = array();
 
 
         $endTimeInSeconds = $this->getTimeInSecondsFromTimeStamp($this->lastTripStartTime);
@@ -77,7 +83,6 @@ class BusTrip {
             $startTimeInSeconds += $haltLength * 60;
             array_push($this->tripPeriods, $tripPeriod);
         }
-        return $this->tripPeriods;
     }
 
     private function getPointFromTimeStamp($timeStamp) {
@@ -104,6 +109,10 @@ class BusTrip {
         }
         $totalSeconds = ($hours * 60 * 60) + ($minutes * 60) + ($seconds * 1);
         return $totalSeconds;
+    }
+
+    public function setTripPeriods($tripPeriods) {
+        $this->tripPeriods = $tripPeriods;
     }
 
 }

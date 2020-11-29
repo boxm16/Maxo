@@ -3,6 +3,7 @@
 include_once 'Model/BusTrip.php';
 include_once 'Model/BusTripIgnitionCode.php';
 include_once 'SequenceController.php';
+include_once 'BreakCOntroller.php';
 
 class RouteController {
 
@@ -22,6 +23,7 @@ class RouteController {
     private $haltTimeMinutes;
     private $initialVersion;
     private $allVersions;
+    private $allVersionsWithBreak;
 
     function __construct($starterTrip, $firstTripStartTime, $lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $abBusCount, $baBusCount, $intervalTimeMinutes, $intervalTimeSeconds, $breakTimeMinutes, $breakTimeSeconds) {
         $this->starterTrip = $starterTrip;
@@ -40,21 +42,23 @@ class RouteController {
         $this->haltTimeMinutes = 5;
         $this->initialVersion = array();
         $this->allVersions = array();
+        $this->allVersionsWithBreak = array();
     }
 
     public function getAllVersions() {
-
-        //here i need to find all possible versions of route
-        //for now i`ll try to find one (initial)version
-
-
         $allSequences = $this->getAllSequences();
         foreach ($allSequences as $sequence) {
             $this->addRouteVersionToAllVersions($sequence);
         }
-
-
         return $this->allVersions;
+    }
+
+    public function getAllVersionsWithBreak() {
+
+        $breakController = new BreakController($this->lastTripStartTime, $this->abTripTimeMinutes, $this->abTripTimeSeconds, $this->baTripTimeMinutes, $this->baTripTimeSeconds, $this->breakTimeMinutes, $this->breakTimeSeconds);
+        $allVersionsWithBreak = $breakController->getEveryBreakVariationForEveryRouteVariation($this->allVersions);
+
+        return $allVersionsWithBreak;
     }
 
     private function getAllSequences() {
@@ -194,7 +198,7 @@ class RouteController {
         }
         $nonStandartSequence = array();
         $pararellSequence = array();
-        echo $index;
+
         for ($x = $index; $x < count($initialSequence); $x++) {
             $ignitionCode = $initialSequence[$x];
             array_push($nonStandartSequence, $ignitionCode);
