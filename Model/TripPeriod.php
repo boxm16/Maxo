@@ -22,6 +22,14 @@ class TripPeriod {
         return $this->length;
     }
 
+    public function setType($type) {
+        $this->type = $type;
+    }
+
+    public function getType() {
+        return $this->type;
+    }
+
     function getPeriodColor() {
         if ($this->type == "halt") {
             return "black";
@@ -46,7 +54,7 @@ class TripPeriod {
     }
 
     public function getEndTimeInSeconds() {
-        if ($this->type == "a" | $this->type == "b" | $this->type == "break") {
+        if ($this->type == "ab" | $this->type == "ba" | $this->type == "break") {
             return $this->startTimeInSeconds + ($this->length * 60);
         } else {
             return "";

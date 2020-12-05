@@ -24,6 +24,7 @@ class RouteController {
     private $initialVersion;
     private $allVersions;
     private $allVersionsWithBreak;
+    private $allSequences;
 
     function __construct($starterTrip, $firstTripStartTime, $lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $abBusCount, $baBusCount, $intervalTimeMinutes, $intervalTimeSeconds, $breakTimeMinutes, $breakTimeSeconds) {
         $this->starterTrip = $starterTrip;
@@ -46,8 +47,8 @@ class RouteController {
     }
 
     public function getAllVersions() {
-        $allSequences = $this->getAllSequences();
-        foreach ($allSequences as $sequence) {
+        $this->allSequences = $this->getAllSequences();
+        foreach ($this->allSequences as $sequence) {
             $this->addRouteVersionToAllVersions($sequence);
         }
         return $this->allVersions;
@@ -57,8 +58,37 @@ class RouteController {
 
         $breakController = new BreakController($this->lastTripStartTime, $this->abTripTimeMinutes, $this->abTripTimeSeconds, $this->baTripTimeMinutes, $this->baTripTimeSeconds, $this->breakTimeMinutes, $this->breakTimeSeconds);
         $allVersionsWithBreak = $breakController->getEveryBreakVariationForEveryRouteVariation($this->allVersions);
+        $distilledBreakTimeSequences = $breakController->getDistilledBreakTimeSequences();
 
-        return $allVersionsWithBreak;
+        $sequenceForCreation = $this->allSequences[0];
+        $arrayOfAllBreakVersionsForRoute = $this->createRouteVersionForFirstSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences);
+        return $arrayOfAllBreakVersionsForRoute;
+    }
+
+    private function createRouteVersionForFirstSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences) {
+        $breakVersionsForRoute = array();
+
+        for ($a = 0; $a < count($distilledBreakTimeSequences); $a++) {
+            $breakSequence = $distilledBreakTimeSequences[$a];
+
+            $routeVersion = array();
+
+            for ($x = 0; $x < count($sequenceForCreation); $x++) {
+                $busTripIgnitionCode = $sequenceForCreation[$x];
+                $starterTrip = $busTripIgnitionCode->getStarterTrip();
+                $startTime = $busTripIgnitionCode->getStartTime();
+                $busTrip = new BusTrip($starterTrip, $startTime, $this->lastTripStartTime, $this->abTripTimeMinutes, $this->abTripTimeSeconds, $this->baTripTimeMinutes, $this->baTripTimeSeconds, $this->breakTimeMinutes, $this->breakTimeSeconds);
+
+                $busTrip->setBreakStartTime($breakSequence[$x]);
+                $busTrip->recreateTrip();
+                array_push($routeVersion, $busTrip);
+            }
+
+
+
+            array_push($breakVersionsForRoute, $routeVersion);
+        }
+        return $breakVersionsForRoute;
     }
 
     private function getAllSequences() {

@@ -12,18 +12,26 @@ and open the template in the editor.
     <body>
 
         <?php
-        $a = array("1", "2", "3", "D");
-        $b = array("4", "2", "3", "D");
-        $c = array("5", "6", "7", "D");
-        $d = array("9", "2", "3", "D");
-        $e = array("1", "2", "3", "D");
-        $f = array("4", "2", "3", "D");
-        $g = array("5", "6", "7", "D");
-        $h = array("9", "2", "3", "D");
+        echo date("h:i:s");
+        echo "<hr>";
+        $a = array("1", "2", "D","1", "2", "D", "1", "2", "D");
+        $b = array("1", "2", "D", "1", "2", "D", "1", "2", "D");
+        $c = array("1", "2", "D", "1", "2", "D","1", "2", "D");
+        $d = array("1", "2", "D", "1", "2", "D","1", "2", "D");
+        $e = array("1", "2", "D", "1", "2", "D");
+        $f = array("1", "2", "D", "1", "2", "D");
+        $g = array("1", "2", "D", "1", "2", "D");
+        $h = array("1", "2", "D", "1", "2", "D");
         $bigArray = array($a, $b, $c, $d, $e, $f, $g, $h);
         printArray($bigArray);
         echo "<hr>";
         permuteRow(0, $bigArray, "");
+        
+        echo "<hr>";
+
+        echo date("h:i:s");
+        echo "<hr>";
+    
 
         function permuteRow($RowNumber, $bigArray, $initialNumber) {
 
@@ -31,8 +39,7 @@ and open the template in the editor.
             for ($a = 0; $a < count($arr); $a++) {
                 $number = $initialNumber . $arr[$a];
                 if ($RowNumber == count($bigArray) - 1) {
-                    echo $number;
-                    echo "<br>";
+                  
                 }
                 $nextRow = $RowNumber + 1;
                 if ($nextRow < count($bigArray)) {

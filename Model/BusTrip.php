@@ -14,6 +14,7 @@ class BusTrip {
     private $breakTimeMinutes;
     private $breakTimeSeconds;
     private $tripPeriods;
+    private $breakStartTime;
 
     function __construct($starterTrip, $firstTripStartTime, $lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $breakTimeMinutes, $breakTimeSeconds) {
         $this->starterTrip = $starterTrip;
@@ -27,6 +28,77 @@ class BusTrip {
         $this->breakTimeSeconds = $breakTimeSeconds;
         $this->tripPeriods = array();
         $this->createTripPeriods();
+    }
+
+    public function setBreakStartTime($breakStartTime) {
+        $this->breakStartTime = $breakStartTime;
+    }
+
+    public function recreateTrip() {
+
+
+        $this->tripPeriods = array();
+
+
+        $endTimeInSeconds = $this->getTimeInSecondsFromTimeStamp($this->lastTripStartTime);
+        //here is the dispatcher that dispatches periods of trip
+        //first halt period at start
+
+
+        $haltLength = 5;       //halt time here
+        $startPoint = $this->getPointFromTimeStamp($this->firstTripStartTime) - $haltLength;
+        $startTimeInSeconds = $this->getTimeInSecondsFromTimeStamp($this->firstTripStartTime) - ($haltLength * 60);
+        $length = $haltLength;
+        $tripPeriod = new TripPeriod("halt", $startPoint, $startTimeInSeconds, $length);
+        array_push($this->tripPeriods, $tripPeriod);
+        //now getting ready for first Trip Period
+        $startPoint = $this->getPointFromTimeStamp($this->firstTripStartTime);
+        $startTimeInSeconds = $this->getTimeInSecondsFromTimeStamp($this->firstTripStartTime);
+
+        $type = $this->starterTrip;
+        while ($startTimeInSeconds < $endTimeInSeconds) {
+
+            if ($type == "ab") {
+                $length = $this->abTripTimeMinutes + $this->abTripTimeSeconds / 60;
+                $tripPeriod = new TripPeriod($type, $startPoint, $startTimeInSeconds, $length);
+                $startPoint += $length;
+                $startTimeInSeconds += ($this->abTripTimeMinutes * 60) + ($this->abTripTimeSeconds * 1);
+            } else {
+                $length = $this->baTripTimeMinutes + $this->baTripTimeSeconds / 60;
+                $tripPeriod = new TripPeriod($type, $startPoint, $startTimeInSeconds, $length);
+                $startTimeInSeconds += ($this->baTripTimeMinutes * 60) + ($this->baTripTimeSeconds * 1);
+                $startPoint += $length;
+            }
+
+            if ($type == "ab") {
+                $type = "ba";
+            } else {
+                $type = "ab";
+            }
+            array_push($this->tripPeriods, $tripPeriod);
+
+            //break period 
+            if ($startTimeInSeconds == $this->breakStartTime) {
+                $length = $this->breakTimeMinutes + $this->breakTimeSeconds / 60;
+
+                $startPoint = $this->getPointFromTimeStamp(gmdate("H:i:s", $this->breakStartTime));
+
+                $tripPeriod = new TripPeriod("break", $startPoint, $this->breakStartTime, $length);
+                $startPoint += $length;
+                $startTimeInSeconds += ($this->breakTimeMinutes * 60) + ($this->breakTimeSeconds * 1);
+                array_push($this->tripPeriods, $tripPeriod);
+            }
+
+            //halt at the end of every trip(ciri)
+
+
+            $length = $haltLength;
+            $tripPeriod = new TripPeriod("halt", $startPoint, $startTimeInSeconds, $length);
+            $startPoint += $haltLength;
+            $startTimeInSeconds += $haltLength * 60;
+            array_push($this->tripPeriods, $tripPeriod);
+        }
+     
     }
 
     public function getTripPeriods() {
@@ -74,6 +146,17 @@ class BusTrip {
                 $type = "ab";
             }
             array_push($this->tripPeriods, $tripPeriod);
+              //break period 
+            if ($startTimeInSeconds == $this->breakStartTime) {
+                $length = $this->breakTimeMinutes + $this->breakTimeSeconds / 60;
+
+                $startPoint = $this->getPointFromTimeStamp(gmdate("H:i:s", $this->breakStartTime));
+
+                $tripPeriod = new TripPeriod("break", $startPoint, $this->breakStartTime, $length);
+                $startPoint += $length;
+                $startTimeInSeconds += ($this->abTripTimeMinutes * 60) + ($this->abTripTimeSeconds * 1);
+                array_push($this->tripPeriods, $tripPeriod);
+            }
             //halt at the end of every trip(ciri)
 
 

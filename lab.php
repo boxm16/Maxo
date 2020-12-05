@@ -24,7 +24,53 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                   
+                    <?php
+                    include 'Model/TripPeriod.php';
+                    $type = "A";
+                    $startPoint = 205;
+                    $startTimeInSeconds = "1000";
+                    $length = "5";
+                    $tripPeriod1 = new TripPeriod($type, $startPoint, $startTimeInSeconds, $length);
+                    $type1 = "B";
+                    $startPoint1 = 505;
+                    $startTimeInSeconds1 = "2000";
+                    $length1 = "55";
+                    $tripPeriod2 = new TripPeriod($type1, $startPoint1, $startTimeInSeconds1, $length1);
+
+                    $tripArray = array();
+                    array_push($tripArray, $tripPeriod1);
+                    array_push($tripArray, $tripPeriod2);
+                    foreach ($tripArray as $item) {
+                        var_dump($item);
+                        echo "<hr>";
+                    }
+
+                    $arrayCope = cloneArrayOfObjects($tripArray);
+
+                    $tripOne = $tripArray[0];
+                    $tripOne->setType("CCCCC");
+
+                    $tripTWo = $arrayCope[1];
+                    $tripTWo->setType("DDDDDDD");
+
+                    var_dump($arrayCope);
+
+                    foreach ($tripTWo as $item) {
+                        var_dump($item);
+                        echo "<hr>";
+                    }
+
+                    function cloneArrayOfObjects($array) {
+                        $clonedArray = array();
+                        foreach ($array as $tripPeriod) {
+                            $type = $tripPeriod->getType();
+                            $clonedTripPeriod = clone $tripPeriod;
+                            $clonedTripPeriod->setType($type);
+                            array_push($clonedArray, $clonedTripPeriod);
+                        }
+                        return $clonedArray;
+                    }
+                    ?>
                 </div>
             </div>
         </div>

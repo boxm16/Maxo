@@ -24,9 +24,10 @@ class BreakController {
     private $breakTimeSeconds;
     private $allVersions;
     private $returnArray;
+    private $distilledBreakTimeSequences;
 
     function __construct($lastTripStartTime, $abTripTimeMinutes, $abTripTimeSeconds, $baTripTimeMinutes, $baTripTimeSeconds, $breakTimeMinutes, $breakTimeSeconds) {
-        $this->breakPoint = "ab";
+        $this->breakPoint = "ba"; //"ab", "ba" or "ab_ba" for both
         $this->startFrontline = "11:00:00";
         $this->endFrontline = "17:00:00";
         $this->allVersions = array();
@@ -41,47 +42,184 @@ class BreakController {
 
     public function getEveryBreakVariationForEveryRouteVariation($allRouteVersions) {
         $routeVersion = $allRouteVersions[0];
+        $strippedRoute = $this->stripRoute($routeVersion);
+        $this->returnArray = array();
 
-        $this->returnArray = array($routeVersion);
-        $rewritenRoute = $this->rewriteRoute($routeVersion);
-     //   $this->permuteRow(0, $rewritenRoute, array());
+        array_push($this->returnArray, $strippedRoute);
+        $this->permuteRow(0, $strippedRoute, array());
+        $breakTimeSequences = $this->getBreakTimeSequence();
+        $this->distilledBreakTimeSequences = $this->purifyBreakSequences($breakTimeSequences);
 
         return $this->returnArray;
     }
 
-    function permuteRow($RowNumber, $routeVersion, $initialArray) {
+    public function getDistilledBreakTimeSequences() {
+        return $this->distilledBreakTimeSequences;
+    }
 
-        $arr = $routeVersion[$RowNumber];
-        $tripPeriodsArray = $arr->getTripPeriods();
-        for ($a = 0; $a < count($tripPeriodsArray); $a++) {
-            $insideArray = $this->cloneArray($initialArray);
-            array_push($insideArray, $tripPeriodsArray[$a]);
+    private function purifyBreakSequences($breakTimeSequences) {
+        //this method(function) is for filtering out viable break sequences;
+        $distilledBreakTimeSequences = array();
 
-            if ($RowNumber == count($routeVersion) - 1) {
-                $a = $b = $c = $d = $e = $f = $h = $t = $as = null;
-                $busTrip = new BusTrip($a, $b, $c, $d, $e, $f, $h, $t, $as);
-                $busTrip->setTripPeriods($insideArray);
-                array_push($this->returnArray, $busTrip);
+        foreach ($breakTimeSequences as $breakTimeSequence) {
+            if ($this->breakTimeSequenceChecks($breakTimeSequence)) {
+                array_push($distilledBreakTimeSequences, $breakTimeSequence);
+            }
+        }
+        return $distilledBreakTimeSequences;
+    }
+
+    private function breakTimeSequenceChecks($breakTimeSequence) {
+        $breakTimePool = array();
+        foreach ($breakTimeSequence as $breakTimePeriod) {
+            if ($this->breakTimePeriodExistsInBreakPool($breakTimePeriod, $breakTimePool)) {
+                return false;
+            } else {
+                array_push($breakTimePool, $breakTimePeriod);
+            }
+        }return true;
+    }
+
+    private function breakTimePeriodExistsInBreakPool($breakTimePeriodStart, $breakTimePool) {
+        if (count($breakTimePool) == 0) {
+            return false;
+        }
+        foreach ($breakTimePool as $poolPeriodStartTime) {
+            $differenceBetweenTwoStartTimesInSeconds = abs($poolPeriodStartTime - $breakTimePeriodStart);
+            if ($differenceBetweenTwoStartTimesInSeconds < ($this->breakTimeMinutes * 60) + ($this->breakTimeSeconds * 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function getBreakTimeSequence() {
+        $breakSequenceArray = array();
+        for ($x = 1; $x < count($this->returnArray); $x++) {
+            $route = $this->returnArray[$x];
+            $breakSequence = array();
+            foreach ($route as $busTrip) {
+                $tripPeriods = $busTrip->getTripPeriods();
+                foreach ($tripPeriods as $tripPeriod) {
+                    $a = $tripPeriod->getEndTimeInSeconds();
+                    array_push($breakSequence, $a);
+                }
+            }
+
+            array_push($breakSequenceArray, $breakSequence);
+        }
+        return $breakSequenceArray;
+    }
+
+    private function cloneRoute($route) {
+        $clonedRoute = array();
+        foreach ($route as $busTrip) {
+            $tripPeriods = $busTrip->getTripPeriods();
+            $clonedTripPeriods = $this->cloneTripPeriods($tripPeriods);
+            $clonedBusTrip = clone $busTrip;
+            $clonedBusTrip->setTripPeriods($clonedTripPeriods);
+            array_push($clonedRoute, $clonedBusTrip);
+        }
+        return $clonedRoute;
+    }
+
+    private function cloneTripPeriods($tripPeriods) {
+        $clonedTripPeriods = array();
+        foreach ($tripPeriods as $tripPeriod) {
+            $clonedTripPeriod = clone $tripPeriod;
+            array_push($clonedTripPeriods, $clonedTripPeriod);
+        }
+        return $clonedTripPeriods;
+    }
+
+    private function permuteRow($RowNumber, $initialRoute, $collectorRoute) {
+        //initialRoute is not ready(full) yet, it collects its busTrips
+        // i need its copy here, not just cope but not dependant clone first
+
+
+        $initialBusTrip = $initialRoute[$RowNumber];
+        $initialTripPeriods = $initialBusTrip->getTripPeriods();
+
+        for ($a = 0; $a < count($initialTripPeriods); $a++) {
+            $route = $this->cloneRoute($collectorRoute);
+            $newTripPeriods = array();
+            $newSingleTripPeriod = $initialTripPeriods[$a];
+            array_push($newTripPeriods, $newSingleTripPeriod);
+            $newBusTrip = clone $initialBusTrip;
+            $newBusTrip->setTripPeriods($newTripPeriods);
+            array_push($route, $newBusTrip);
+            if ($RowNumber == count($initialRoute) - 1) {
+                array_push($this->returnArray, $route);
             }
             $nextRow = $RowNumber + 1;
-            if ($nextRow < count($routeVersion)) {
-                $this->permuteRow($nextRow, $routeVersion, $insideArray);
+            if ($nextRow < count($initialRoute)) {
+                $this->permuteRow($nextRow, $initialRoute, $route);
             }
         }
     }
 
-    function cloneArray($array) {
-        $nAr = array();
-
-        foreach ($array as $item) {
-            $copy = clone $item;
-            array_push($nAr, $copy);
+    private function stripRoute($route) {
+        $strippedRoute = array();
+        foreach ($route as $busTrip) {
+            $tripPeriodsArray = $busTrip->getTripPeriods();
+            $strippedTripPeriods = array();
+            foreach ($tripPeriodsArray as $tripPeriod) {
+                if ($this->tripPeriodChecks($tripPeriod)) {
+                    array_push($strippedTripPeriods, $tripPeriod);
+                }
+            }
+            $newBusTrip = clone $busTrip;
+            $newBusTrip->setTripPeriods($strippedTripPeriods);
+            array_push($strippedRoute, $newBusTrip);
         }
-        return $nAr;
+        return $strippedRoute;
     }
 
-    function rewriteRoute($route) {
-        return $route;
+    private function tripPeriodChecks($tripPeriod) {
+        if ($this->tripPeriodIsHalt($tripPeriod) || !$this->tripEndHasBreakPoint($tripPeriod) || $this->tripPeriodIsOutOfFrontlines($tripPeriod)) {
+            return false;
+        }return true;
+    }
+
+    private function tripPeriodIsHalt($tripPeriod) {
+        $tripType = $tripPeriod->getType();
+        return $tripType == "halt";
+    }
+
+    private function tripEndHasBreakPoint($tripPeriod) {
+        if ($this->breakPoint == "ab_ba") {
+            return true;
+        } else {
+            return $this->breakPoint == $tripPeriod->getType();
+        }
+        return true;
+    }
+
+    private function tripPeriodIsOutOfFrontlines($tripPeriod) {
+        $breakStartFrontlineInSeconds = $this->getTimeInSecondsFromTimeStamp($this->startFrontline);
+        $breakEndFrontlineInSeconds = $this->getTimeInSecondsFromTimeStamp($this->endFrontline) - $this->breakTimeMinutes * 60 - $this->breakTimeSeconds * 1;
+
+
+        if ($tripPeriod->getEndTimeInSeconds() < $breakStartFrontlineInSeconds || $tripPeriod->getEndTimeInSeconds() > $breakEndFrontlineInSeconds) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+// 
+
+    private function getTimeInSecondsFromTimeStamp($timeStamp) {
+        $splittedTime = explode(":", $timeStamp);
+        $hours = $splittedTime[0];
+        $minutes = $splittedTime[1];
+        if (count($splittedTime) == 3) {
+            $seconds = $splittedTime[2];
+        } else {
+            $seconds = 0;
+        }
+        $totalSeconds = ($hours * 60 * 60) + ($minutes * 60) + ($seconds * 1);
+        return $totalSeconds;
     }
 
 }
