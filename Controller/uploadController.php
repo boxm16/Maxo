@@ -1,6 +1,7 @@
 <?php
 
-include "SimpleXLSX.php";
+
+
 $target_dir = "../uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
@@ -8,7 +9,7 @@ $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
 // Check if image file is a actual image or fake image
 if (isset($_POST["submit"])) {
-    if ($_FILES["fileToUpload"]["size"] > 500000) {
+    if ($_FILES["fileToUpload"]["size"] > 500000000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
     }
@@ -34,22 +35,7 @@ if (isset($_POST["submit"])) {
 }
 
 function deployFile() {
-    echo "<h1>deploying file</h1>";
-    if ($xlsx = SimpleXLSX::parse('../uploads/excellFile.xlsx')) {
-        $a = $xlsx->rowsEx();
-
-        foreach ($a as $b) {
-            foreach ($b as $c) {
-                var_dump($c);
-                echo "<hr>";
-            }
-            echo "<hr>";
-            echo "<hr>";
-            echo "<hr>";
-        }
-    } else {
-        echo SimpleXLSX::parseError();
-    }
+   header("Location:../excel.php");
 }
 
 // Check file size
