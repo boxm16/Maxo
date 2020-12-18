@@ -26,7 +26,7 @@ and open the template in the editor.
     </head>
     <body>
         <div class="container">
-            <a href="try.php">ახალი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="graphical.php" target="_blank">MM</a>
+            <a href="try.php">ახალი ვერსია</a> &nbsp; <a href="calculator.php">მანძილი/სიჩქარე/დრო</a> &nbsp;<a href="graphical.php" target="_blank">MM</a> &nbsp;<a href="excel.php" target="_blank">EXCEL</a>
             <div class="row">
 
                 <div class="col-sm"> 

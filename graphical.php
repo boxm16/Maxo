@@ -184,8 +184,13 @@ $allVersionsWithBreak = $routeController->getAllVersionsWithBreak();
                     <?php
                     //-----------??---------------//-------------//-----------//----------//
                     ////this is a part for versions with break/////
+                    $routeVersionIndex = 0;
                     foreach ($allVersionsWithBreak as $routeVersion) {
-
+                        $routeVersionIndex++;
+                        echo $routeVersionIndex;
+                        if ($routeVersionIndex > 500) {
+                            break;
+                        }
                         $height = 300;
                         $x = 30;
                         $y = 30;
@@ -213,7 +218,7 @@ $allVersionsWithBreak = $routeController->getAllVersionsWithBreak();
                         //----------------------------------------------------------------
                         $yI = 30;
                         foreach ($routeVersion as $busTrip) {
-                           
+
                             $tripPeriods = $busTrip->getTripPeriods();
                             foreach ($tripPeriods as $tripPeriod) {
                                 $startPoint = $tripPeriod->getStartPoint();

@@ -3,7 +3,7 @@
 include_once 'Model/BusTrip.php';
 include_once 'Model/BusTripIgnitionCode.php';
 include_once 'SequenceController.php';
-include_once 'BreakCOntroller.php';
+include_once 'BreakController.php';
 
 class RouteController {
 
@@ -59,20 +59,23 @@ class RouteController {
         $breakController = new BreakController($this->lastTripStartTime, $this->abTripTimeMinutes, $this->abTripTimeSeconds, $this->baTripTimeMinutes, $this->baTripTimeSeconds, $this->breakTimeMinutes, $this->breakTimeSeconds);
         $allVersionsWithBreak = $breakController->getEveryBreakVariationForEveryRouteVariation($this->allVersions);
         $distilledBreakTimeSequences = $breakController->getDistilledBreakTimeSequences();
-
-        $sequenceForCreation = $this->allSequences[0];
-        $arrayOfAllBreakVersionsForRoute = $this->createRouteVersionForFirstSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences);
+        $arrayOfAllBreakVersionsForRoute = array();
+        for ($x = 0; $x < count($this->allSequences); $x++) {
+            $sequenceForCreation = $this->allSequences[$x];
+            $arrayOfAllBreakVersionsForRoute1 = $this->createRouteVersionForSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences);
+            $arrayOfAllBreakVersionsForRoute = array_merge($arrayOfAllBreakVersionsForRoute, $arrayOfAllBreakVersionsForRoute1);
+        }
         return $arrayOfAllBreakVersionsForRoute;
     }
 
-    private function createRouteVersionForFirstSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences) {
+    private function createRouteVersionForSequenceWithBreaks($sequenceForCreation, $distilledBreakTimeSequences) {
         $breakVersionsForRoute = array();
 
         for ($a = 0; $a < count($distilledBreakTimeSequences); $a++) {
             $breakSequence = $distilledBreakTimeSequences[$a];
 
             $routeVersion = array();
-
+            $versionIsFiltered = false;
             for ($x = 0; $x < count($sequenceForCreation); $x++) {
                 $busTripIgnitionCode = $sequenceForCreation[$x];
                 $starterTrip = $busTripIgnitionCode->getStarterTrip();
@@ -81,12 +84,22 @@ class RouteController {
 
                 $busTrip->setBreakStartTime($breakSequence[$x]);
                 $busTrip->recreateTrip();
-                array_push($routeVersion, $busTrip);
+
+                //here sort out the busTrip wheter it has inside it some tripPeriod that is too close to some period tha already existrs inside routeVersion
+                //if it has, we skip the rest of procedure for this routeVersion, and go fore next version 
+                if (!$this->busTripSomePeriodIsTooCloseToSomePeriodInsideRouteVersion($busTrip, $routeVersion, $this->intervalTimeMinutes, $this->intervalTimeSeconds)) {
+                    array_push($routeVersion, $busTrip);
+                    $versionIsFiltered = true;
+                } else {
+                    $versionIsFiltered = false;
+                    break;
+                }
             }
 
 
-
-            array_push($breakVersionsForRoute, $routeVersion);
+            if ($versionIsFiltered) {
+                array_push($breakVersionsForRoute, $routeVersion);
+            }
         }
         return $breakVersionsForRoute;
     }
@@ -267,6 +280,50 @@ class RouteController {
         }
         $totalSeconds = ($hours * 60 * 60) + ($minutes * 60) + ($seconds * 1);
         return $totalSeconds;
+    }
+
+    private function busTripSomePeriodIsTooCloseToSomePeriodInsideRouteVersion($busTrip, $routeVersion, $intervalTimeMinutes, $intervalTimeSeconds) {
+
+        foreach ($routeVersion as $busTripVersion) {
+
+            if ($this->twoBusTripHaveTooCloseTripPeriods($busTrip, $busTripVersion, $intervalTimeMinutes, $intervalTimeSeconds)) {
+                return true;
+            }
+        }return false;
+    }
+
+    private function twoBusTripHaveTooCloseTripPeriods($busTrip, $busTripVersion, $intervalTimeMinutes, $intervalTimeSeconds) {
+        $busTripPeriods = $busTrip->getTripPeriods();
+
+
+
+
+        foreach ($busTripPeriods as $tripPeriod) {
+
+            $tripPeriodType = $tripPeriod->getType();
+
+            if ($tripPeriodType == 'halt' || $tripPeriodType == "break") {
+
+                continue;
+            }
+            $busTripPeriodsVersion = $busTripVersion->getTripPeriods();
+            foreach ($busTripPeriodsVersion as $tripPeriodVersion) {
+
+                $tripPeriodTypeVersion = $tripPeriodVersion->getType();
+                if ($tripPeriodType != $tripPeriodTypeVersion) {
+                    continue;
+                }
+                $tripPeriodStartTimeInSeconds = $tripPeriod->getStartTimeInSeconds();
+                $tripPeriodVersionStartTimeInSeconds = $tripPeriodVersion->getStartTimeInSeconds();
+
+                $allowedDifferenceTimeInSeconds = ($intervalTimeMinutes * 60) + ($intervalTimeSeconds * 1);
+
+                if (abs($tripPeriodStartTimeInSeconds - $tripPeriodVersionStartTimeInSeconds) < $allowedDifferenceTimeInSeconds) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

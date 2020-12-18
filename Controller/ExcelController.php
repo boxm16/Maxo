@@ -139,7 +139,7 @@ class ExcelController {
         $tripPeriodArrivalTimeActual = $this->getBaseArrivalTimeActual($row);
         $tripPeriodArrivalTimeDifference = $this->getBaseArrivalTimeDifference($row);
 
-        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
+        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
         return $tripPeriod;
     }
 
@@ -244,7 +244,7 @@ class ExcelController {
         $tripPeriodArrivalTimeActual = $this->getBaseArrivalTimeActual($row);
         $tripPeriodArrivalTimeDifference = $this->getBaseArrivalTimeDifference($row);
 
-        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
+        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
         return $tripPeriod;
     }
 
@@ -258,7 +258,7 @@ class ExcelController {
         $tripPeriodArrivalTimeActual = $this->getBaseArrivalTimeActual($row);
         $tripPeriodArrivalTimeDifference = $this->getBaseArrivalTimeDifference($row);
 
-        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
+        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
         return $tripPeriod;
     }
 
@@ -271,7 +271,7 @@ class ExcelController {
         $tripPeriodArrivalTimeActual = $row[18]["value"];
         $tripPeriodArrivalTimeDifference = $row[19]["value"];
 
-        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
+        $tripPeriod = new TripPeriodXL($tripPeriodType, $tripPeriodStartTimeScheduled, $tripPeriodsStartTimeActual, $tripPeriodStartTimeDifference, $tripPeriodArrivalTimeScheduled, $tripPeriodArrivalTimeActual, $tripPeriodArrivalTimeDifference);
         return $tripPeriod;
     }
 

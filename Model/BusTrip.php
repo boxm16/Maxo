@@ -98,7 +98,6 @@ class BusTrip {
             $startTimeInSeconds += $haltLength * 60;
             array_push($this->tripPeriods, $tripPeriod);
         }
-     
     }
 
     public function getTripPeriods() {
@@ -146,7 +145,7 @@ class BusTrip {
                 $type = "ab";
             }
             array_push($this->tripPeriods, $tripPeriod);
-              //break period 
+            //break period 
             if ($startTimeInSeconds == $this->breakStartTime) {
                 $length = $this->breakTimeMinutes + $this->breakTimeSeconds / 60;
 
@@ -197,5 +196,7 @@ class BusTrip {
     public function setTripPeriods($tripPeriods) {
         $this->tripPeriods = $tripPeriods;
     }
+
+   
 
 }
